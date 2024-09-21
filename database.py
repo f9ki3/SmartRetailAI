@@ -11,7 +11,8 @@ class Tables(Database):  # Inherit from Database
         self.cursor.executescript('''
             CREATE TABLE IF NOT EXISTS Category (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
+                name TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
             );
 
             CREATE TABLE IF NOT EXISTS Products (
@@ -22,6 +23,7 @@ class Tables(Database):  # Inherit from Database
                 stock INTEGER NOT NULL DEFAULT 0,
                 barcode_id TEXT UNIQUE,
                 barcode_image BLOB,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (category_id) REFERENCES Category (id)
             );
 
@@ -34,9 +36,9 @@ class Tables(Database):  # Inherit from Database
                 email TEXT NOT NULL UNIQUE,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
-                role TEXT NOT NULL
+                role TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
             );
-
 
             CREATE TABLE IF NOT EXISTS Stocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +46,7 @@ class Tables(Database):  # Inherit from Database
                 stock_in INTEGER DEFAULT 0,
                 stock_out INTEGER DEFAULT 0,
                 date TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id) REFERENCES Products (id)
             );
 
@@ -53,11 +56,12 @@ class Tables(Database):  # Inherit from Database
                 quantity INTEGER NOT NULL,
                 total_price REAL NOT NULL,
                 sale_date TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id) REFERENCES Products (id)
             );
         ''')
         self.conn.commit() 
-        self.conn.close()   
+        self.conn.close()
 
 if __name__ == "__main__":
     Tables().createTables()

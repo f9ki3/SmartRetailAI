@@ -1,24 +1,30 @@
 from database import Database
 
 class Accounts(Database):
-    def create_account(self, fname, lname, address, contact, email, username, password, role):
+    def create_account(self, fname, lname, address, contact, email, username, password, role, date_created=None):
+        # Use the current date if no date is provided
+        if date_created is None:
+            date_created = 'CURRENT_TIMESTAMP'  # Use SQLite's CURRENT_TIMESTAMP
+        else:
+            date_created = f'"{date_created}"'  # Format date for SQL
+
         # Insert a new account
-        self.cursor.execute('''
-            INSERT INTO Accounts (fname, lname, address, contact, email, username, password, role) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        self.cursor.execute(f'''
+            INSERT INTO Accounts (fname, lname, address, contact, email, username, password, role, date_created) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, {date_created});
         ''', (fname, lname, address, contact, email, username, password, role))
         self.conn.commit()
         print(f"Account for '{username}' created successfully!")
 
     def read_accounts(self):
         # Retrieve all accounts
-        self.cursor.execute('SELECT * FROM Accounts;')
+        self.cursor.execute('SELECT id, fname, lname, address, contact, email, username, role, date_created FROM Accounts;')
         accounts = self.cursor.fetchall()
         for account in accounts:
             print(account)
         return accounts
 
-    def update_account(self, account_id, fname=None, lname=None, address=None, contact=None, email=None, username=None, password=None, role=None):
+    def update_account(self, account_id, fname=None, lname=None, address=None, contact=None, email=None, username=None, password=None, role=None, date_created=None):
         # Update the account based on given arguments
         updates = []
         params = []
@@ -47,6 +53,9 @@ class Accounts(Database):
         if role:
             updates.append("role = ?")
             params.append(role)
+        if date_created is not None:
+            updates.append("date_created = ?")
+            params.append(date_created)
 
         # Only proceed if there is something to update
         if updates:

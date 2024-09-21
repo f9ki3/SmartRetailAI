@@ -3,20 +3,26 @@ from database import Database
 class Stocks(Database):
 
     def add_stock(self, product_id, stock_in=0, stock_out=0, date=None):
+        # Use the current date if no date is provided
+        if date is None:
+            date = 'CURRENT_TIMESTAMP'  # Use SQLite's CURRENT_TIMESTAMP
+        else:
+            date = f'"{date}"'  # Format date for SQL
+
         # Insert a new stock record
-        self.cursor.execute('''
+        self.cursor.execute(f'''
             INSERT INTO Stocks (product_id, stock_in, stock_out, date) 
-            VALUES (?, ?, ?, ?);
-        ''', (product_id, stock_in, stock_out, date))
+            VALUES (?, ?, ?, {date});
+        ''', (product_id, stock_in, stock_out))
         self.conn.commit()
         print(f"Stock record added for Product ID {product_id}.")
 
     def read_stocks(self):
         # Retrieve all stock records
-        self.cursor.execute('SELECT * FROM Stocks;')
+        self.cursor.execute('SELECT id, product_id, stock_in, stock_out, date FROM Stocks;')
         stocks = self.cursor.fetchall()
         for stock in stocks:
-            print(stock)
+            print(f"ID: {stock[0]}, Product ID: {stock[1]}, Stock In: {stock[2]}, Stock Out: {stock[3]}, Date: {stock[4]}")
         return stocks
 
     def update_stock(self, stock_id, stock_in=None, stock_out=None, date=None):
@@ -30,7 +36,7 @@ class Stocks(Database):
         if stock_out is not None:
             updates.append("stock_out = ?")
             params.append(stock_out)
-        if date:
+        if date is not None:
             updates.append("date = ?")
             params.append(date)
 

@@ -12,11 +12,11 @@ class Products(Database):
         print(f"Product '{name}' created successfully with barcode ID '{barcode_id}'.")
 
     def read_products(self):
-        # Retrieve all products
-        self.cursor.execute('SELECT * FROM Products;')
+        # Retrieve all products, including the created_at date
+        self.cursor.execute('SELECT id, name, category_id, price, stock, barcode_id, created_at FROM Products;')
         products = self.cursor.fetchall()
         for product in products:
-            print(product)
+            print(f"ID: {product[0]}, Name: {product[1]}, Category ID: {product[2]}, Price: {product[3]}, Stock: {product[4]}, Barcode ID: {product[5]}, Created At: {product[6]}")
         return products
 
     def update_product(self, product_id, name=None, category_id=None, price=None, stock=None, barcode_id=None, barcode_image=None):

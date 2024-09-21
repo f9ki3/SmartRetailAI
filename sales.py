@@ -1,21 +1,27 @@
 from database import Database
 
 class Sales(Database):
-    def create_sale(self, product_id, quantity, total_price, sale_date):
+    def create_sale(self, product_id, quantity, total_price, sale_date=None):
+        # Use the current date if no sale_date is provided
+        if sale_date is None:
+            sale_date = 'CURRENT_TIMESTAMP'  # Use SQLite's CURRENT_TIMESTAMP
+        else:
+            sale_date = f'"{sale_date}"'  # Format date for SQL
+
         # Insert a new sale record
-        self.cursor.execute('''
+        self.cursor.execute(f'''
             INSERT INTO Sales (product_id, quantity, total_price, sale_date) 
-            VALUES (?, ?, ?, ?);
-        ''', (product_id, quantity, total_price, sale_date))
+            VALUES (?, ?, ?, {sale_date});
+        ''', (product_id, quantity, total_price))
         self.conn.commit()
         print(f"Sale recorded for Product ID {product_id}.")
 
     def read_sales(self):
-        # Retrieve all sales records
-        self.cursor.execute('SELECT * FROM Sales;')
+        # Retrieve all sales records, including sale_date
+        self.cursor.execute('SELECT id, product_id, quantity, total_price, sale_date FROM Sales;')
         sales = self.cursor.fetchall()
         for sale in sales:
-            print(sale)
+            print(f"ID: {sale[0]}, Product ID: {sale[1]}, Quantity: {sale[2]}, Total Price: {sale[3]}, Sale Date: {sale[4]}")
         return sales
 
     def update_sale(self, sale_id, product_id=None, quantity=None, total_price=None, sale_date=None):
