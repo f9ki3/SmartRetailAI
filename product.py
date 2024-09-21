@@ -2,28 +2,14 @@ from database import Database
 
 class Products(Database):
 
-    def create_table(self):
-        # Create the Products table if it doesn't exist
+    def create_product(self, name, category_id, price, stock=0, barcode_id=None, barcode_image=None):
+        # Insert a new product with barcode_id and barcode image
         self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                category_id INTEGER,
-                price REAL NOT NULL,
-                stock INTEGER NOT NULL DEFAULT 0,
-                FOREIGN KEY (category_id) REFERENCES Category (id)
-            );
-        ''')
+            INSERT INTO Products (name, category_id, price, stock, barcode_id, barcode_image) 
+            VALUES (?, ?, ?, ?, ?, ?);
+        ''', (name, category_id, price, stock, barcode_id, barcode_image))
         self.conn.commit()
-
-    def create_product(self, name, category_id, price, stock=0):
-        # Insert a new product
-        self.cursor.execute('''
-            INSERT INTO Products (name, category_id, price, stock) 
-            VALUES (?, ?, ?, ?);
-        ''', (name, category_id, price, stock))
-        self.conn.commit()
-        print(f"Product '{name}' created successfully!")
+        print(f"Product '{name}' created successfully with barcode ID '{barcode_id}'.")
 
     def read_products(self):
         # Retrieve all products
@@ -33,7 +19,7 @@ class Products(Database):
             print(product)
         return products
 
-    def update_product(self, product_id, name=None, category_id=None, price=None, stock=None):
+    def update_product(self, product_id, name=None, category_id=None, price=None, stock=None, barcode_id=None, barcode_image=None):
         # Update the product based on given arguments
         updates = []
         params = []
@@ -50,6 +36,12 @@ class Products(Database):
         if stock is not None:
             updates.append("stock = ?")
             params.append(stock)
+        if barcode_id:
+            updates.append("barcode_id = ?")
+            params.append(barcode_id)
+        if barcode_image is not None:
+            updates.append("barcode_image = ?")
+            params.append(barcode_image)
 
         # Only proceed if there is something to update
         if updates:

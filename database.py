@@ -20,15 +20,23 @@ class Tables(Database):  # Inherit from Database
                 category_id INTEGER,
                 price REAL NOT NULL,
                 stock INTEGER NOT NULL DEFAULT 0,
+                barcode_id TEXT UNIQUE,
+                barcode_image BLOB,
                 FOREIGN KEY (category_id) REFERENCES Category (id)
             );
 
             CREATE TABLE IF NOT EXISTS Accounts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                fname TEXT NOT NULL,
+                lname TEXT NOT NULL,
+                address TEXT NOT NULL,
+                contact TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL
             );
+
 
             CREATE TABLE IF NOT EXISTS Stocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,5 +56,8 @@ class Tables(Database):  # Inherit from Database
                 FOREIGN KEY (product_id) REFERENCES Products (id)
             );
         ''')
-        self.conn.commit()  # Commit the transaction
-        self.conn.close()   # Close the connection
+        self.conn.commit() 
+        self.conn.close()   
+
+if __name__ == "__main__":
+    Tables().createTables()
