@@ -44,11 +44,10 @@ class Category(Database):
 # Example Usage (Uncomment to run)
 if __name__ == "__main__":
     cat = Category()
-    cat.create_category('Shirt')
-    cat.create_category('Shoes')
-    cat.create_category('Pants')
-    cat.read_categories()
-    cat.update_category(1, 'T-Shirts')
-    cat.delete_category(3)
-    cat.read_categories()
-    cat.close_connection()
+    cat.create_category('Tops')
+    cat.create_category('Outer Wear')
+    cat.create_category('Bottoms')
+    cat.create_category('Head Wear')
+    cat.create_category('Foot Wear')
+    cat.create_category('Eye Wear')
+    

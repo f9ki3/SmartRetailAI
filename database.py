@@ -21,6 +21,7 @@ class Tables(Database):  # Inherit from Database
                 category_id INTEGER,
                 price REAL NOT NULL,
                 stock INTEGER NOT NULL DEFAULT 0,
+                size TEXT,  -- Added size column
                 barcode_id TEXT UNIQUE,
                 barcode_image BLOB,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -37,8 +38,9 @@ class Tables(Database):  # Inherit from Database
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                date_created TEXT DEFAULT CURRENT_TIMESTAMP  -- Changed column name to date_created
             );
+
 
             CREATE TABLE IF NOT EXISTS Stocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,

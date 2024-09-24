@@ -1,6 +1,10 @@
 from database import Database
 
 class Accounts(Database):
+    def __init__(self):
+        super().__init__()  # Initialize the parent class
+        self.create_admin_account()  # Create admin account on initialization
+
     def create_account(self, fname, lname, address, contact, email, username, password, role, date_created=None):
         # Use the current date if no date is provided
         if date_created is None:
@@ -15,6 +19,29 @@ class Accounts(Database):
         ''', (fname, lname, address, contact, email, username, password, role))
         self.conn.commit()
         print(f"Account for '{username}' created successfully!")
+
+    def create_admin_account(self):
+        # Create an admin account with default values
+        try:
+            self.cursor.execute('''
+                SELECT * FROM Accounts WHERE role = 'admin';
+            ''')
+            if not self.cursor.fetchone():  # Check if admin already exists
+                self.create_account(
+                    fname="Admin",
+                    lname="User",
+                    address="Admin Address",
+                    contact="1234567890",
+                    email="admin@example.com",  # Change if necessary
+                    username="admin",
+                    password="admin",  # Default password
+                    role="admin"
+                )
+                print("Admin account created successfully.")
+            else:
+                print("Admin account already exists.")
+        except Exception as e:
+            print(f"Error creating admin account: {e}")
 
     def read_accounts(self):
         # Retrieve all accounts
@@ -79,3 +106,7 @@ class Accounts(Database):
     def close_connection(self):
         # Close the database connection
         self.conn.close()
+
+
+if __name__ == "__main__":
+    Accounts().create_admin_account()
