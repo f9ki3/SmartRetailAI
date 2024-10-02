@@ -17,7 +17,7 @@ def admin_dashboard():
 
 @app.route('/cashier-pos')
 def cashier_pos():
-    return render_template('home.html')
+    return render_template('cashier-pos.html')
 
 
 if __name__ == "__main__":
