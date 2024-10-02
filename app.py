@@ -10,6 +10,16 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('login.html')
+
+@app.route('/admin-dashboard')
+def admin_dashboard():
+    return render_template('admin-dashboard.html')
+
+@app.route('/cashier-pos')
+def cashier_pos():
+    return render_template('home.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
     # Tables().createTables()
