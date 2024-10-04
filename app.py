@@ -27,6 +27,20 @@ def admin_dashboard():
     else:
         return redirect('/')  # Redirect if not an admin
 
+@app.route('/admin-category')
+def category():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-category.html')
+    else:
+        return redirect('/')  # Redirect if not an admin
+
+@app.route('/admin-products')
+def products():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-products.html')
+    else:
+        return redirect('/')  # Redirect if not an admin
+
 @app.route('/cashier-pos')
 def cashier_pos():
     return render_template('cashier-pos.html')
@@ -46,6 +60,43 @@ def post_login():
         return jsonify(result)
     else:
         return jsonify({"error": "Invalid username or password"}), 401
+    
+# Categories API
+@app.route('/read_categories', methods=['GET'])
+def read_categories():
+    data = Category().read_categories()
+    return jsonify(data)
+
+@app.route('/delete_category', methods=['POST'])
+def delete_category():
+    json = request.json
+    cat_id = json.get('category_id')
+    Category().delete_category(cat_id)
+    return jsonify({'status': cat_id})
+
+@app.route('/add_category', methods=['POST'])
+def category_name():
+    json = request.json
+    cat_name = json.get('category_name')
+    Category().create_category(cat_name)
+    return jsonify({'status': cat_name})
+
+@app.route('/retrieved_category', methods=['POST'])
+def retrieved_category():
+    json = request.json
+    cat_id = json.get('category_id')
+    data = Category().view_category(cat_id)
+    print(data)
+    return jsonify(data)
+
+@app.route('/update_category', methods=['POST'])
+def update_category():
+    json = request.json
+    cat_id = json.get('cat_id')
+    cat_name = json.get('cat_name')
+    Category().update_category(cat_id, cat_name)
+    return jsonify(1)
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

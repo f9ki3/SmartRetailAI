@@ -13,10 +13,31 @@ class Category(Database):
     def read_categories(self):
         # Retrieve all categories, including the created_at date
         self.cursor.execute('SELECT id, name, created_at FROM Category;')
-        categories = self.cursor.fetchall()
-        for category in categories:
-            print(f"ID: {category[0]}, Name: {category[1]}, Created At: {category[2]}")
+        rows = self.cursor.fetchall()
+
+        # Get column names
+        column_names = [desc[0] for desc in self.cursor.description]
+
+        # Construct a list of dictionaries
+        categories = []
+        for row in rows:
+            category_dict = {column_names[i]: row[i] for i in range(len(column_names))}
+            categories.append(category_dict)
+
         return categories
+
+    def view_category(self, category_id):
+        # Retrieve a single category by ID
+        self.cursor.execute('SELECT id, name, created_at FROM Category WHERE id = ?;', (category_id,))
+        row = self.cursor.fetchone()
+
+        # If a row is found, return it as a dictionary
+        if row:
+            column_names = [desc[0] for desc in self.cursor.description]
+            return dict(zip(column_names, row))
+        else:
+            print(f"No category found with ID {category_id}")
+            return None
 
     def update_category(self, category_id, new_name):
         # Update the name of an existing category by ID
@@ -44,10 +65,5 @@ class Category(Database):
 # Example Usage (Uncomment to run)
 if __name__ == "__main__":
     cat = Category()
-    cat.create_category('Tops')
-    cat.create_category('Outer Wear')
-    cat.create_category('Bottoms')
-    cat.create_category('Head Wear')
-    cat.create_category('Foot Wear')
-    cat.create_category('Eye Wear')
+    cat.read_categories()
     

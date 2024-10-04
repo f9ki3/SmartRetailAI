@@ -15,12 +15,7 @@
         </div>
         <div id="category_add_alert" style="display: none;">
             <div style="position: fixed; bottom: 0" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>Added category success!
-            </div>
-        </div>
-        <div id="category_edit_alert" style="display: none;">
-            <div style="position: fixed; bottom: 0" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>Updated category success!
+                <i class="bi bi-check-circle-fill me-2"></i>Added product success!
             </div>
         </div>
         <div class="row">
@@ -28,9 +23,9 @@
                 {% include 'admin-nav.html' %}
             </div>
             <div class="col-10">
-                <h3>Categories</h3>
+                <h3>Products</h3>
                 <hr>
-                <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addCategory">Add Category</button>
+                <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addCategory">Add Product</button>
                 <div>
                     <table id="data-table-categories" class="display " style="font-size: 12px;">
                         <thead>
@@ -81,7 +76,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-bolder" id="exampleModalLabel">Add Category</h1>
+          <h1 class="modal-title fs-5 fw-bolder" id="exampleModalLabel">Add Categories</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -91,27 +86,6 @@
         <div class="modal-footer">
           <button id="cancel_category_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
           <button onclick="addCategory()" type="button" class="btn btn-sm btn-success">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-<div class="modal fade" id="viewCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-bolder" id="exampleModalLabel">View Category</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <input id="category_id_view" type="hidden">
-            <p>Category Name: </p>
-            <input id="edit_cat_name" type="text" class="form-control" placeholder="Enter category name">
-        </div>
-        <div class="modal-footer">
-          <button id="cancel_category_edit" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
-          <button onclick="editCategory()" type="button" class="btn btn-sm btn-success">Save changes</button>
         </div>
       </div>
     </div>
