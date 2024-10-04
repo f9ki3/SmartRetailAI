@@ -10,38 +10,42 @@ app.secret_key = 'smartretail'
 
 @app.route('/')
 def login():
-    if 'user_type' in session and session['user_type'] == 1:
-        redirect ['/admin_dashboard']
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return redirect('/admin-dashboard')  # Use parentheses and return the redirect
     else: 
         return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect('/')  # Return the redirect to the home page
 
 @app.route('/admin-dashboard')
 def admin_dashboard():
-    if 'user_type' in session and session['user_type'] == 1:
+    if 'user_type' in session and session['user_type'] == 'admin':
         return render_template('admin-dashboard.html')
     else:
-        return redirect('/')
+        return redirect('/')  # Redirect if not an admin
 
 @app.route('/cashier-pos')
 def cashier_pos():
     return render_template('cashier-pos.html')
 
+
 # API Calls/Endpoints
 @app.route('/post_login', methods=['POST'])
 def post_login():
-    json = request.json
-    uname = json.get('uname')
-    passw = json.get('passw')
-    if uname == 'admin' and passw == 'admin':
-        session['user_type'] = 1
-        return '1'
+    data = request.json
+    uname = data.get('uname')
+    passw = data.get('passw')
+    
+    result = Accounts().login(uname, passw)
+    
+    if result:
+        session['user_type'] = result.get('role')
+        return jsonify(result)
     else:
-        return '0'
+        return jsonify({"error": "Invalid username or password"}), 401
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

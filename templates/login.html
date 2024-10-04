@@ -28,7 +28,12 @@
                 <input id="uname" type="text" class="form-control" placeholder="Enter your username">
                 <p>password</p>
                 <input id="passw" type="password" class="form-control" placeholder="Enter your password">
-                <button onclick="login()" class="btn btn-dark w-100 mt-3">Login</button>
+                <button onclick="login()" class="btn btn-dark w-100 mt-3">
+                    <p id="login_text" class="m-0 p-0">Login</p>
+                    <div id="login_loading" class="p-0 m-0 spinner-border" role="status" style="display: none; width: 1.5rem; height: 1.5rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
             </div>
             <div class="col-12 col-md-4"></div>
         </div>
