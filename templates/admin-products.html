@@ -82,8 +82,50 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            <p class="m-0 mb-1" style="font-size: 12px;">Product Image: </p>
+            <input type="file" class="form-control form-control-sm mb-3">
             <p class="m-0 mb-1" style="font-size: 12px;">Product Name: </p>
-            <input id="product_name" type="text" class="form-control form-control-sm" placeholder="Enter product name">
+            <textarea name="" class="form-control" id="product_name"></textarea>
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <p class="m-0 mb-1 mt-3" style="font-size: 12px;">Product Price: </p>
+                <input id="product_price" type="number" class="form-control form-control-sm" placeholder="Enter product price">
+              </div>
+              <div class="col-12 col-md-6">
+                <p class="m-0 mb-1 mt-3" style="font-size: 12px;">Select Category</p>
+                <select name="" id="" class="form-select form-select-sm">
+                  <option disabled selected>Select</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md">
+                <p class="m-0 mt-3 mb-1" style="font-size: 12px;">Select Size: </p>
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio1">XS</label>
+                
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio2">S</label>
+
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio3">M</label>
+                  
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio4">L</label>
+
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio5">XL</label>
+
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                  <label class="btn btn-outline-secondary btn-sm" for="btnradio6">XXL</label>
+                </div>
+              </div>
+              <div class="col-12 col-md">
+                <p class="m-0 mb-1 mt-3" style="font-size: 12px;">Barcode ID: </p>
+                <input id="product_price" type="text" class="form-control form-control-sm" placeholder="Enter barcode id">
+              </div>
+            </div>
         </div>
         <div class="modal-footer">
           <button id="cancel_product_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
