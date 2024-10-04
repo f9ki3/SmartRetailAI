@@ -2,24 +2,24 @@ from database import Database
 
 class Products(Database):
 
-    def create_product(self, name, category_id, price, stock=0, barcode_id=None, barcode_image=None):
-        # Insert a new product with barcode_id and barcode image
+    def create_product(self, name, category_id, price, stock=0, size=None, barcode_id=None, barcode_image=None, product_image=None):
+        # Insert a new product with size, barcode_id, barcode image, and product image
         self.cursor.execute('''
-            INSERT INTO Products (name, category_id, price, stock, barcode_id, barcode_image) 
-            VALUES (?, ?, ?, ?, ?, ?);
-        ''', (name, category_id, price, stock, barcode_id, barcode_image))
+            INSERT INTO Products (name, category_id, price, stock, size, barcode_id, barcode_image, product_image) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        ''', (name, category_id, price, stock, size, barcode_id, barcode_image, product_image))
         self.conn.commit()
-        print(f"Product '{name}' created successfully with barcode ID '{barcode_id}'.")
+        print(f"Product '{name}' created successfully with barcode ID '{barcode_id}', size '{size}', and product image.")
 
     def read_products(self):
-        # Retrieve all products, including the created_at date
-        self.cursor.execute('SELECT id, name, category_id, price, stock, barcode_id, created_at FROM Products;')
+        # Retrieve all products, including the created_at date, size, and product image
+        self.cursor.execute('SELECT id, name, category_id, price, stock, size, barcode_id, barcode_image, product_image, created_at FROM Products;')
         products = self.cursor.fetchall()
         for product in products:
-            print(f"ID: {product[0]}, Name: {product[1]}, Category ID: {product[2]}, Price: {product[3]}, Stock: {product[4]}, Barcode ID: {product[5]}, Created At: {product[6]}")
+            print(f"ID: {product[0]}, Name: {product[1]}, Category ID: {product[2]}, Price: {product[3]}, Stock: {product[4]}, Size: {product[5]}, Barcode ID: {product[6]}, Barcode Image: {product[7]}, Product Image: {product[8]}, Created At: {product[9]}")
         return products
 
-    def update_product(self, product_id, name=None, category_id=None, price=None, stock=None, barcode_id=None, barcode_image=None):
+    def update_product(self, product_id, name=None, category_id=None, price=None, stock=None, size=None, barcode_id=None, barcode_image=None, product_image=None):
         # Update the product based on given arguments
         updates = []
         params = []
@@ -36,12 +36,18 @@ class Products(Database):
         if stock is not None:
             updates.append("stock = ?")
             params.append(stock)
+        if size:
+            updates.append("size = ?")
+            params.append(size)
         if barcode_id:
             updates.append("barcode_id = ?")
             params.append(barcode_id)
         if barcode_image is not None:
             updates.append("barcode_image = ?")
             params.append(barcode_image)
+        if product_image is not None:
+            updates.append("product_image = ?")
+            params.append(product_image)
 
         # Only proceed if there is something to update
         if updates:

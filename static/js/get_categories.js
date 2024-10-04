@@ -21,6 +21,11 @@ $(document).ready(function() {
                         </td>
                     </tr>`
                 );
+
+                  // Append options to the select dropdown
+                $('#category-select').append(
+                    `<option value="${item.id}">${item.name}</option>`
+                );
             });
 
             // Initialize DataTable with pagination

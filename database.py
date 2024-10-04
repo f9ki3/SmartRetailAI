@@ -24,9 +24,11 @@ class Tables(Database):  # Inherit from Database
                 size TEXT,  -- Added size column
                 barcode_id TEXT UNIQUE,
                 barcode_image BLOB,
+                product_image BLOB,  -- Added product_image column
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (category_id) REFERENCES Category (id)
             );
+
 
             CREATE TABLE IF NOT EXISTS Accounts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,

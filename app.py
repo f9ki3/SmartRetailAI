@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
+import os
+from werkzeug.utils import secure_filename
 from database import Tables
 from accounts import *
 from category import *
@@ -7,6 +9,11 @@ from sales import *
 from stocks import *
 app = Flask(__name__)
 app.secret_key = 'smartretail'
+
+# Define the upload folder
+UPLOAD_FOLDER = 'static/uploads'
+# Ensure the upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
 def login():
@@ -96,6 +103,52 @@ def update_category():
     cat_name = json.get('cat_name')
     Category().update_category(cat_id, cat_name)
     return jsonify(1)
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    try:
+        # Retrieve form data
+        product_name = request.form.get('name')
+        product_price = request.form.get('price')
+        product_size = request.form.get('size')
+        barcode_id = request.form.get('barcode_id')
+        category_id = request.form.get('category_id')
+
+        # Check if an image was uploaded
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image uploaded'}), 400
+
+        product_image = request.files['image']
+
+        # Check if the file has a valid name
+        if product_image.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # Secure the filename and save the image
+        filename = secure_filename(product_image.filename)
+        image_path = os.path.join(UPLOAD_FOLDER, filename)
+        product_image.save(image_path)
+
+        # Example: Save the product information to the database
+        # Convert price to a float, and ensure stock is set correctly (default is 0)
+        product_price = float(product_price) if product_price else 0.0
+        Products().create_product(
+            name=product_name,
+            category_id=category_id,
+            price=product_price,
+            stock=0,  # You can change this to take stock from the request if needed
+            size=product_size, 
+            barcode_id=barcode_id, 
+            barcode_image=None,  # You can handle barcode images if needed
+            product_image=image_path  # Save the image path in the database
+        )
+
+        # Respond with a success message
+        return jsonify({'message': 'Product added successfully', 'image_path': image_path}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 if __name__ == "__main__":
