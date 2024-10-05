@@ -86,7 +86,6 @@ $(document).ready(function() {
                     const productName = $(this).data('name');
                     const productSize = $(this).data('size');
                     const productPrice = parseFloat($(this).data('price'));
-                    console.log('click!')
                     // Create the cart item object
                     const cartItem = {
                         id: productId,
@@ -179,6 +178,7 @@ function populateCart() {
             `;
             // Append the row to the tbody
             cartItemsContainer.append(row);
+            calculateTotals()
         });
     } else {
         // Optionally show a message when the cart is empty
@@ -196,7 +196,7 @@ function populateCart() {
 // Call the function to populate the cart on page load
 $(document).ready(function() {
     populateCart();
-
+    
     // Event delegation to handle removing items from the cart
     $('#cart-items').on('click', '.remove-item', function() {
         const productId = $(this).data('id');
@@ -228,6 +228,7 @@ $(document).ready(function() {
 
         // Update local storage
         localStorage.setItem('cart', JSON.stringify(cart));
+        
     }
 
     // Event delegation to handle changes in quantity inputs
@@ -254,5 +255,172 @@ $(document).ready(function() {
             $(this).blur(); // Trigger blur to close the input field
             populateCart();
         }
+    });
+});
+
+// Function to format numbers as monetary values
+// Function to format numbers as monetary values
+function formatCurrency(value) {
+    return new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(value);
+}
+
+// Function to calculate and populate totals
+function calculateTotals() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let subtotal = 0;
+
+    // Calculate subtotal based on cart items
+    cart.forEach(item => {
+        subtotal += item.price * item.qty; // Assuming price is in the correct format
+    });
+
+    // Calculate VAT (12% of subtotal)
+    const vat = subtotal * 0.12;
+
+    // Update the display with formatted values
+    $('#subtotal').text(formatCurrency(subtotal));
+    $('#vat').text(formatCurrency(vat));
+    $('#total').text(formatCurrency(subtotal)); // Total is the same as subtotal in this case
+
+    // Set the payment input value to the total amount
+    $('#payment').val(subtotal.toFixed(2)); // Set payment input to the total
+
+    // Update change based on payment input
+    updateChange();
+}
+
+// Function to update the change displayed and enable/disable the payment button
+function updateChange() {
+    const paymentInput = parseFloat($('#payment').val()) || 0; // Get payment value or default to 0
+    const total = parseFloat($('#total').text().replace(/[₱, ]/g, '')) || 0; // Parse total amount
+    const change = paymentInput - total; // Calculate change
+
+    $('#change').text(formatCurrency(change)); // Update change display
+
+    // Conditional coloring for change
+    if (change < 0) {
+        $('#change').css('color', 'red'); // Change text color to red if payment is less than total
+    } else {
+        $('#change').css('color', ''); // Reset to default color if payment is sufficient
+    }
+
+    // Enable or disable the payment button based on payment amount
+    if (paymentInput >= total) {
+        $('#btn-payment').prop('disabled', false); // Enable button
+    } else {
+        $('#btn-payment').prop('disabled', true); // Disable button
+    }
+}
+
+
+// Call this function whenever cart is populated or updated
+$(document).ready(function() {
+    populateCart();
+    calculateTotals(); // Initial calculation on page load
+
+    // Event delegation for cart changes
+    $('#cart-items').on('change input', '.qty-input', function() {
+        const productId = $(this).data('id');
+        const newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
+        updateCartQuantity(productId, newQty); // Update local storage
+        calculateTotals(); // Recalculate totals after updating quantity
+    });
+
+    $('#cart-items').on('click', '.remove-item', function() {
+        const productId = $(this).data('id');
+
+        // Remove the item from the cart array
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart = cart.filter(item => item.id !== productId);
+        
+        // Update local storage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Repopulate the cart and recalculate totals
+        populateCart();
+        calculateTotals();
+    });
+
+    // Event listener for payment input changes
+    $('#payment').on('input blur', function() {
+        updateChange(); // Update change display when input changes or loses focus
+    });
+});
+
+
+// Reset button
+// Function to remove all items from the cart and clear the session
+function remove_cart() {
+    // Clear the cart from local storage
+    localStorage.removeItem('cart');
+
+    // Clear the cart display on the webpage
+    const cartItemsContainer = $('#cart-items');
+    cartItemsContainer.empty(); // Remove all cart items from the display
+    cartItemsContainer.append(
+        `<tr>
+            <td colspan="4" class=" text-center text-muted" style="font-size: 20px; padding-top: 10rem; padding-bottom: 10rem">
+                <i class="bi bi-cart2 fs-3"></i> No items in the cart.
+            </td>
+        </tr>`
+    );
+
+    // Reset totals to zero
+    $('#subtotal').text(formatCurrency(0));
+    $('#vat').text(formatCurrency(0));
+    $('#total').text(formatCurrency(0));
+    $('#change').text(formatCurrency(0));
+    
+    // Clear the payment input
+    $('#payment').val('');
+
+    // Disable the payment button
+    $('#btn-payment').prop('disabled', true);
+
+    // Optional: You can also reset any other session-related data here
+    // For example, if using sessionStorage or any session variables
+    // sessionStorage.removeItem('sessionCartData'); // Example
+}
+
+// Call this function when you want to clear the cart, e.g., on a button click
+$(document).ready(function() {
+    // Example button for removing the cart
+    $('#remove-cart-btn').on('click', function() {
+        remove_cart(); // Call the remove_cart function
+    });
+});
+
+
+// Function for payment
+// Function to log cart details and payment information
+function logPaymentDetails() {
+    // Get the cart from local storage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Get the subtotal, VAT, total, payment, and change values
+    const subtotal = parseFloat($('#subtotal').text().replace('₱ ', '').replace(',', '')) || 0;
+    const vat = parseFloat($('#vat').text().replace('₱ ', '').replace(',', '')) || 0;
+    const total = parseFloat($('#total').text().replace('₱ ', '').replace(',', '')) || 0;
+    const payment = parseFloat($('#payment').val()) || 0;
+    const change = parseFloat($('#change').text().replace('₱ ', '').replace(',', '')) || 0;
+
+    // Log the details to the console
+    console.log('Cart Items:', cart);
+    console.log('Subtotal:', subtotal.toFixed(2));
+    console.log('VAT:', vat.toFixed(2));
+    console.log('Total Amount:', total.toFixed(2));
+    console.log('Payment:', payment.toFixed(2));
+    console.log('Change:', change.toFixed(2));
+}
+
+// Call this function when the payment button is clicked
+$(document).ready(function() {
+    $('#btn-payment').on('click', function() {
+        logPaymentDetails(); // Call the logPaymentDetails function
     });
 });

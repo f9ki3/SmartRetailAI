@@ -56,17 +56,19 @@
                                 <p class="m-0 p-0">Subtotal</p>
                                 <p class="m-0 p-0">VAT (Included)</p>
                                 <p class="m-0 p-0">Total Amount</p>
+                                <p class="m-0 p-0">Change</p>
                             </div>
                             <div class="text-end">
-                                <p class="m-0 p-0">₱  100.00</p>
-                                <p class="m-0 p-0">₱  100.00</p>
-                                <p class="m-0 p-0">₱  100.00</p>
+                                <p id="subtotal" class="m-0 p-0">₱ 0.00</p>
+                                <p id="vat" class="m-0 p-0">₱ 0.00</p>
+                                <p id="total" class="m-0 p-0">₱ 0.00</p>
+                                <p id="change" class="m-0 p-0">₱ 0.00</p>
                             </div>
                         </div>
                     </div>
-                    <input class="form-control mb-3" type="text" placeholder="Enter your payment here">
-                    <button class="btn btn-dark mb-3"><i class="bi bi-cash-stack me-2 fs-4"></i>Payment</button>
-                    <button class="btn btn-secondary"><i class="bi bi-trash3-fill me-2 fs-4"></i>Cancel</button>
+                    <input id="payment" class="form-control mb-3" type="text" placeholder="Enter your payment here">                    
+                    <button id="btn-payment" disabled class="btn btn-dark mb-3"><i class="bi bi-cash-stack me-2 fs-4"></i>Payment</button>
+                    <button onclick="remove_cart()" class="btn border-dark"><i class="bi bi-trash3-fill me-2 fs-4"></i>Cancel</button>
                 </div>
             </div>
         </div>
