@@ -298,6 +298,18 @@ function calculateTotals() {
 function updateChange() {
     const paymentInput = parseFloat($('#payment').val()) || 0; // Get payment value or default to 0
     const total = parseFloat($('#total').text().replace(/[₱, ]/g, '')) || 0; // Parse total amount
+
+    // If total is 0, clear the payment input and disable the button and input
+    if (total === 0) {
+        $('#payment').val(''); // Clear payment input
+        $('#payment').prop('disabled', true); // Disable payment input
+        $('#btn-payment').prop('disabled', true); // Disable payment button
+        $('#change').text(formatCurrency(0)); // Optionally reset change display
+        return; // Exit the function early
+    } else {
+        $('#payment').prop('disabled', false); // Enable payment input if total is not 0
+    }
+
     const change = paymentInput - total; // Calculate change
 
     $('#change').text(formatCurrency(change)); // Update change display
@@ -316,6 +328,7 @@ function updateChange() {
         $('#btn-payment').prop('disabled', true); // Disable button
     }
 }
+
 
 
 // Call this function whenever cart is populated or updated
