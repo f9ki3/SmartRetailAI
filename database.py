@@ -21,13 +21,14 @@ class Tables(Database):  # Inherit from Database
                 category_id INTEGER,
                 price REAL NOT NULL,
                 stock INTEGER NOT NULL DEFAULT 0,
-                size TEXT,  -- Added size column
-                barcode_id TEXT UNIQUE,
-                barcode_image BLOB,
-                product_image BLOB,  -- Added product_image column
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (category_id) REFERENCES Category (id)
+                size TEXT,  -- Optional size column
+                barcode_id TEXT UNIQUE,  -- Ensure unique barcode for each product
+                barcode_image TEXT,  -- Store the barcode image as binary data
+                product_image TEXT,  -- Store the product image as binary data
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when the product is created
+                FOREIGN KEY (category_id) REFERENCES Category (id)  -- Reference to the Category table
             );
+
 
 
             CREATE TABLE IF NOT EXISTS Accounts (

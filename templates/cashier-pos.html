@@ -11,121 +11,25 @@
         <div class="row">
             <div class="col-12 col-md-7 p-3 pt-0">
                 <div style="margin-bottom: 100px">
-                    <div class="row" style="position: fixed; background-color: white; z-index: 10px">
-                        <h5 class="fw-bolder">Product Listing</h5>
+                    <div class="row" style="position: fixed; z-index: 100">
+                        <h5 class="fw-bolder" style="background-color: white">Product Listing</h5>
                         <div class="col-10">
                             <input type="text" class="form-control form-control-sm" placeholder="Search Product here...">
                         </div>
-                        <div class="col-12 mt-1">
+                        <div class="col-12 mt-1 d-flex flex-row">
                             <button class="btn btn-sm">All</button>
-                            <button class="btn btn-sm">Tops</button>
-                            <button class="btn btn-sm">Bottoms</button>
-                            <button class="btn btn-sm">Outer Wear</button>
-                            <button class="btn btn-sm">Head Wear</button>
-                            <button class="btn btn-sm">Foot Wear</button>
-                            <button class="btn btn-sm">Eye Wear</button>
+                            <div id="cashier-category">
+
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 mt-2">
-                        <div class="row g-2">
-                            <!-- First Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/BRICK_BYU_BRICK_HOODIE93cf.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Brick by Brick Hoodie (Black)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 1,800.00 PHP</h6>
-                                </div>
-                            </div>
-                            <!-- Second Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/BRICK_BY_BRICK_BABY_TEE_5e6e5e98-22d0-4934-9a4f-e9b6034399cf4b17.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Brick by Brick Tee S/S (Black)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 700.00 PHP</h6>
-                                </div>
-                            </div>
-                            <!-- Third Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/BETTY1852.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Betty Boop Tee S/S (White)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 700.00 PHP</h6>
-                                </div>
-                            </div>
-                            <!-- Fourth Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/GOOFY_FRONT1852.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Goofy Tee S/S (White)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 700.00 PHP</h6>
-                                </div>
-                            </div>
-                            <!-- Fifth Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/MASTERCARD1852.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Mastercard Tee S/S (Black)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 700.00 PHP</h6>
-                                </div>
-                            </div>
-                            <!-- Sixth Product -->
-                            <div class="col-6 col-md-4">
-                                <div class="p-3">
-                                    <div style="position: relative;">
-                                        <div style="width: 100%; height: 200px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Olympic Tee S/S (White)</p>
-                                    <h6 class="fw-bolder mt-0">₱ 700.00 PHP</h6>
-                                </div>
-                            </div>
+                        <div class="row g-2" id="product-grid">
                         </div>
                     </div>
                 </div>
-                
-
-                
             </div>
             <div class="col-12 col-md-5">
                 <div style="position: fixed; width: 500px; height: 85vh" class="d-flex rounded flex-column">

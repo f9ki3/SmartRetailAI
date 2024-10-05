@@ -129,18 +129,19 @@ def add_product():
         image_path = os.path.join(UPLOAD_FOLDER, filename)
         product_image.save(image_path)
 
-        # Example: Save the product information to the database
         # Convert price to a float, and ensure stock is set correctly (default is 0)
         product_price = float(product_price) if product_price else 0.0
+        stock = 0  # Change this to take stock from the request if needed
+
+        # Example: Save the product information to the database
         Products().create_product(
             name=product_name,
             category_id=category_id,
             price=product_price,
-            stock=0,  # You can change this to take stock from the request if needed
-            size=product_size, 
-            barcode_id=barcode_id, 
-            barcode_image=None,  # You can handle barcode images if needed
-            product_image=image_path  # Save the image path in the database
+            stock=stock,
+            size=product_size,
+            barcode_id=barcode_id,
+            product_image=image_path  # Ensure you are passing 'product_image'
         )
 
         # Respond with a success message
@@ -149,6 +150,17 @@ def add_product():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/read_products', methods=['GET'])
+def read_products():
+    data = Products().read_products()
+    return jsonify(data)
+
+@app.route('/delete_product', methods=['POST'])
+def delete_product():
+    id = request.json.get('product_id')
+    print(id)
+    Products().delete_product(id)
+    return jsonify(id)
 
 
 if __name__ == "__main__":

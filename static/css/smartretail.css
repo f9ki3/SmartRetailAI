@@ -51,6 +51,17 @@
 #data-table-categories td {
     border: none !important;
 }
+
+/* Remove table borders */
+#data-table-products {
+    border: none !important;
+}
+/* Remove borders from table cells */
+#data-table-products th, 
+#data-table-products td {
+    border: none !important;
+}
+
 /* Custom font size for pagination */
 .dataTables_paginate {
     font-size: 12px; /* Adjust this value as needed */
@@ -64,6 +75,11 @@
 }
 .dataTables_filter{
     font-size: 12px;
+}
+
+.btn-group.is-invalid {
+    border: 1px solid red; /* Change the border color to red */
+    border-radius: 0.25rem; /* Optional: to maintain border radius */
 }
 
 @media (max-width: 767px) {
