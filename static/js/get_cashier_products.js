@@ -429,6 +429,9 @@ function logPaymentDetails() {
     console.log('Total Amount:', total.toFixed(2));
     console.log('Payment:', payment.toFixed(2));
     console.log('Change:', change.toFixed(2));
+
+    localStorage.removeItem('cart');
+    location.reload()
 }
 
 // Call this function when the payment button is clicked
