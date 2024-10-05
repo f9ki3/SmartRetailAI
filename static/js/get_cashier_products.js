@@ -39,7 +39,7 @@ $(document).ready(function() {
                         $('#product-grid').append(
                             `<div class="col-6 col-md-4">
                                 <div class="p-3">
-                                    <div style="position: relative;">
+                                    <div style="position: relative; z-index: -10">
                                         <div style="width: 100%; height: 200px;">
                                             <img style="object-fit: cover; width: 100%; height: 100%;" src="${item.product_image}" alt="Product Image">
                                             <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5" data-id="${item.id}">
