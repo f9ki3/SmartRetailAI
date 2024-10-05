@@ -13,10 +13,10 @@ $(document).ready(function() {
                     `<tr data-bs-toggle="modal" data-bs-target="#viewProduct" class="tr-products" data-id="${item.id}" style="cursor: pointer">
                         <td class="pt-3 pb-3 text-center">${item.id}</td>
                         <td class="pt-3 pb-3 text-center">
-                            <img src="${item.product_image}" alt="Product Image" style="width: 50px; height: auto;"> <!-- Display product image -->
+                            <img src="${item.product_image}" alt="Product Image" style="width: 70px; height: 70px;"> <!-- Display product image -->
                         </td>
-                        <td class="pt-3 pb-3 text-center">${item.name}</td>
-                        <td class="pt-3 pb-3 text-center">${item.created_at}</td>
+                        <td class="pt-3 pb-3">${item.name}</td>
+                        <td class="pt-3 pb-3">${item.created_at}</td>
                         <td class="pt-3 pb-3 text-center">${item.size}</td> <!-- Added size -->
                         <td class="pt-3 pb-3 text-center">${item.price.toFixed(2)}</td> <!-- Added price -->
                         <td class="pt-3 pb-3 text-center">${item.stock}</td> <!-- Added stock -->
@@ -84,6 +84,7 @@ function deleteProduct() {
         }
     });
 }
+
 
 function addProduct() {
     // Collecting input values
