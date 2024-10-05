@@ -11,10 +11,10 @@
         <div class="row">
             <div class="col-12 col-md-7 p-3 pt-0">
                 <div style="margin-bottom: 100px">
-                    <div class="row pb-3" style="position: fixed; background-color: white;">
+                    <div class="row pb-3" style="position: fixed; background-color: white; z-index: 100; width: auto">
                         <h5 class="fw-bolder">Product Listing</h5>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-sm" placeholder="Search Product here...">
+                            <input id="search-pos" type="text" class="form-control form-control-sm" placeholder="Search Product here...">
                         </div>
                         <div class="col-12 mt-1 d-flex flex-row">
                             <button id="all_category" class="btn btn-sm">All</button>
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-5">
-                <div style="position: fixed; width: 500px; height: 85vh" class="d-flex rounded flex-column">
+                <div style="position: fixed; width: 500px; height: 85vh; z-index: 200" class="d-flex rounded flex-column">
                     <h5 class="fw-bolder">Cart Orders</h5>
                     <div class="position-relative mb-3 fade-div" style="height: 70vh; overflow-y: auto">
                         <table class="table" style="font-size: 12px;">
@@ -44,96 +44,9 @@
                                     <th width="5%">action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Rows here -->
-                                <tr style="animation: fadeOut 2s forwards; animation-timeline: scroll()">
-                                    <td>
-                                        <div style="height: 100px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="p-0 mb-1">Prod 1</p>
-                                        <p class="p-0 mb-1">100.00 x 1</p>
-                                    </td>
-                                    <td>
-                                        <input class="form-control bg-muted form-control-sm" type="text" value="1">
-                                    </td>
-                                    <td>
-                                        <button class="btn"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr style="animation: fadeOut 2s forwards; animation-timeline: scroll()">
-                                    <td>
-                                        <div style="height: 100px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="p-0 mb-1">Prod 1</p>
-                                        <p class="p-0 mb-1">100.00 x 1</p>
-                                    </td>
-                                    <td>
-                                        <input class="form-control bg-muted form-control-sm" type="text" value="1">
-                                    </td>
-                                    <td>
-                                        <button class="btn"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr style="animation: fadeOut 2s forwards; animation-timeline: scroll()">
-                                    <td>
-                                        <div style="height: 100px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="p-0 mb-1">Prod 1</p>
-                                        <p class="p-0 mb-1">100.00 x 1</p>
-                                    </td>
-                                    <td>
-                                        <input class="form-control bg-muted form-control-sm" type="text" value="1">
-                                    </td>
-                                    <td>
-                                        <button class="btn"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr style="animation: fadeOut 2s forwards; animation-timeline: scroll()">
-                                    <td>
-                                        <div style="height: 100px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="p-0 mb-1">Prod 1</p>
-                                        <p class="p-0 mb-1">100.00 x 1</p>
-                                    </td>
-                                    <td>
-                                        <input class="form-control bg-muted form-control-sm" type="text" value="1">
-                                    </td>
-                                    <td>
-                                        <button class="btn"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr style="animation: fadeOut 2s forwards; animation-timeline: scroll()">
-                                    <td>
-                                        <div style="height: 100px;">
-                                            <img style="object-fit: cover; width: 100%; height: 100%;" src="../static/uploads/OLYMPIC1852.png" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="p-0 mb-1">Prod 1</p>
-                                        <p class="p-0 mb-1">100.00 x 1</p>
-                                    </td>
-                                    <td>
-                                        <input class="form-control bg-muted form-control-sm" type="text" value="1">
-                                    </td>
-                                    <td>
-                                        <button class="btn"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-
-                                <!-- More rows -->
-                            </tbody>
+                            <tbody id="cart-items">
+                                <!-- Rows will be dynamically populated here -->
+                            </tbody>                            
                         </table>
                     </div>
                     <div class="mb-3">

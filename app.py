@@ -160,7 +160,7 @@ def delete_product():
     id = request.json.get('product_id')
     print(id)
     Products().delete_product(id)
-    return jsonify(id)
+    return jsonify(1)
 
 
 if __name__ == "__main__":
