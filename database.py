@@ -55,14 +55,23 @@ class Tables(Database):  # Inherit from Database
             );
 
             CREATE TABLE IF NOT EXISTS Sales (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER,
-                quantity INTEGER NOT NULL,
-                total_price REAL NOT NULL,
-                sale_date TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (product_id) REFERENCES Products (id)
+                sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                sales_reference TEXT NOT NULL,
+                item_id INTEGER NOT NULL,
+                item_name TEXT NOT NULL,
+                price REAL NOT NULL,
+                product_image TEXT,
+                qty INTEGER NOT NULL,
+                size TEXT,
+                stock INTEGER NOT NULL,
+                subtotal TEXT NOT NULL,
+                total_amount TEXT NOT NULL,
+                payment REAL NOT NULL,
+                change TEXT NOT NULL,
+                sale_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (item_id) REFERENCES CartItems(id)  -- assuming you have a CartItems table
             );
+
         ''')
         self.conn.commit() 
         self.conn.close()

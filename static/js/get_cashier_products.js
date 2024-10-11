@@ -58,7 +58,7 @@ $(document).ready(function() {
                                     <div style="position: relative;">
                                         <div style="width: 100%; height: 200px;">
                                             <img style="object-fit: cover; width: 100%; height: 100%;" src="${item.product_image}" alt="Product Image">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5 add-to-cart" data-id="${item.id}" data-image="${item.product_image}" data-name="${item.name}" data-size="${item.size}" data-price="${item.price}" ${item.stock <= 0 ? 'disabled' : ''}>
+                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5 add-to-cart" data-id="${item.id}" data-stock="${item.stock}" data-image="${item.product_image}" data-name="${item.name}" data-size="${item.size}" data-price="${item.price}" ${item.stock <= 0 ? 'disabled' : ''}>
                                                 <i class="bi bi-cart-plus"></i>
                                             </button>
                                         </div>
@@ -87,6 +87,7 @@ $(document).ready(function() {
                     const productImage = $(this).data('image');
                     const productName = $(this).data('name');
                     const productSize = $(this).data('size');
+                    const productMax = $(this).data('stock');
                     const productPrice = parseFloat($(this).data('price'));
                     const productStock = parseInt($(this).closest('.p-3').find('p.mb-0').text().split(': ')[1]) || 0; // Get the stock value
 
@@ -102,6 +103,7 @@ $(document).ready(function() {
                         product_image: productImage,
                         name: productName,
                         size: productSize,
+                        stock: productMax,
                         qty: 1, // Default quantity
                         price: productPrice,
                         subtotal: productPrice // Subtotal is equal to price for 1 item
@@ -178,9 +180,10 @@ function populateCart() {
                     <td>
                         <p class="p-0 mb-1">${item.name}</p>
                         <p class="p-0 mb-1">₱ ${item.price.toFixed(2)} x ${item.qty}</p>
+                        <p class="p-0 mb-1">Stock: ${item.stock}</p>
                     </td>
                     <td>
-                        <input class="form-control bg-muted form-control-sm qty-input" type="text" value="${item.qty}" data-id="${item.id}">
+                        <input class="form-control bg-muted form-control-sm qty-input" type="text" value="${item.qty}" data-stock="${item.stock}" data-id="${item.id}">
                     </td>
                     <td>
                         <button class="btn remove-item" data-id="${item.id}"><i class="bi bi-trash"></i></button>
@@ -204,9 +207,10 @@ function populateCart() {
     }
 }
 
+// Call the function to populate the cart on page load
 $(document).ready(function() {
     populateCart();
-
+    
     // Event delegation to handle removing items from the cart
     $('#cart-items').on('click', '.remove-item', function() {
         const productId = $(this).data('id');
@@ -223,12 +227,12 @@ $(document).ready(function() {
     });
 
     // Function to update the quantity in local storage
-    function updateCartQuantity(productId, newQty, maxQty) {
+    function updateCartQuantity(productId, newQty) {
         // Get cart items from local storage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Ensure the quantity is at least 1 and does not exceed max quantity
-        newQty = Math.max(1, Math.min(newQty, maxQty)); // Set to 1 if less than 1 or max if exceeded
+        // Ensure the quantity is at least 1
+        newQty = Math.max(1, newQty); // Set to 1 if less than 1
 
         // Find the item and update its quantity
         const itemIndex = cart.findIndex(item => item.id === productId);
@@ -240,15 +244,24 @@ $(document).ready(function() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
+    // Function to validate quantity
+    function validateQuantity(inputElement, newQty) {
+        const maxQty = $(inputElement).data('stock');
+        return newQty <= maxQty;
+    }
+
     // Event delegation to handle changes in quantity inputs
     $('#cart-items').on('input', '.qty-input', function() {
         const productId = $(this).data('id');
         let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
-
-        // Get the stock for the item
-        const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0; // Assuming stock is displayed in an element with class 'stock-value'
-
-        updateCartQuantity(productId, newQty, maxQty); // Update local storage immediately
+        
+        if (validateQuantity(this, newQty)) {
+            updateCartQuantity(productId, newQty); // Update local storage immediately
+        } else {
+            // Optionally, you can alert the user or reset the value
+            $(this).val($(this).data('qty')); // Reset to the original quantity
+            alert(`Quantity cannot exceed ${$(this).data('stock')}.`);
+        }
     });
 
     // Update quantity when input loses focus (click outside)
@@ -256,10 +269,13 @@ $(document).ready(function() {
         const productId = $(this).data('id');
         let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
         
-        // Get the stock for the item
-        const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0;
-
-        updateCartQuantity(productId, newQty, maxQty); // Update local storage
+        if (validateQuantity(this, newQty)) {
+            updateCartQuantity(productId, newQty); // Update local storage
+        } else {
+            $(this).val($(this).data('qty')); // Reset to the original quantity
+            alert(`Quantity cannot exceed ${$(this).data('stock')}.`);
+        }
+        
         populateCart();
     });
 
@@ -269,18 +285,19 @@ $(document).ready(function() {
             const productId = $(this).data('id');
             let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
             
-            // Get the stock for the item
-            const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0;
-
-            updateCartQuantity(productId, newQty, maxQty); // Update local storage
-            $(this).blur(); // Trigger blur to close the input field
+            if (validateQuantity(this, newQty)) {
+                updateCartQuantity(productId, newQty); // Update local storage
+                $(this).blur(); // Trigger blur to close the input field
+            } else {
+                $(this).val($(this).data('qty')); // Reset to the original quantity
+                alert(`Quantity cannot exceed ${$(this).data('stock')}.`);
+            }
+            
             populateCart();
         }
     });
 });
 
-
-// Function to format numbers as monetary values
 // Function to format numbers as monetary values
 function formatCurrency(value) {
     return new Intl.NumberFormat('en-PH', {
@@ -437,23 +454,41 @@ function logPaymentDetails() {
     // Get the cart from local storage
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     
-    // Get the subtotal, VAT, total, payment, and change values
-    const subtotal = parseFloat($('#subtotal').text().replace('₱ ', '').replace(',', '')) || 0;
-    const vat = parseFloat($('#vat').text().replace('₱ ', '').replace(',', '')) || 0;
-    const total = parseFloat($('#total').text().replace('₱ ', '').replace(',', '')) || 0;
-    const payment = parseFloat($('#payment').val()) || 0;
-    const change = parseFloat($('#change').text().replace('₱ ', '').replace(',', '')) || 0;
+    // Get the subtotal, VAT, total, payment, and change values as plain text
+    const subtotal = $('#subtotal').text().replace('₱', '').trim();
+    const vat = $('#vat').text().replace('₱', '').trim();
+    const total = $('#total').text().replace('₱', '').trim();
+    const payment = parseFloat($('#payment').val()) || 0; // Assuming #payment is an input element
+    const change = $('#change').text().replace('₱', '').trim();
 
-    // Log the details to the console
-    console.log('Cart Items:', cart);
-    console.log('Subtotal:', subtotal.toFixed(2));
-    console.log('VAT:', vat.toFixed(2));
-    console.log('Total Amount:', total.toFixed(2));
-    console.log('Payment:', payment.toFixed(2));
-    console.log('Change:', change.toFixed(2));
+    // Prepare data to send
+    const paymentData = {
+        cart: cart,
+        subtotal: subtotal,
+        vat: vat,
+        total: total,
+        payment: payment.toFixed(2), // Keeping this as float and formatted
+        change: change
+    };
 
-    localStorage.removeItem('cart');
-    location.reload()
+    console.log(paymentData)
+    // Send the details to the server via AJAX
+    $.ajax({
+        url: '/create_sale', // Replace with your server URL
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(paymentData),
+        success: function(response) {
+            console.log('Payment logged successfully:', response);
+            // Optionally, handle the response (e.g., show a success message)
+            localStorage.removeItem('cart'); // Uncomment if you want to clear the cart
+            location.reload(); // Uncomment if you want to refresh the page
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error logging payment:', textStatus, errorThrown);
+            // Optionally, handle errors (e.g., show an error message)
+        }
+    });
 }
 
 // Call this function when the payment button is clicked

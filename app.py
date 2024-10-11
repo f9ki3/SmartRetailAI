@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
-import os
+import os, random
 from werkzeug.utils import secure_filename
 from database import Tables
 from accounts import *
@@ -179,6 +179,39 @@ def add_stock():
     Stocks().addStocks(product_id, product_stocks, type)
 
     return jsonify(data)
+
+@app.route('/create_sale', methods=['POST'])
+def create_sale():
+    # Generate a 10-digit sales reference
+    sales_reference = str(random.randint(1000000000, 9999999999))
+    
+    # Get the JSON data from the request
+    data = request.get_json()
+
+    # Log the payment details (you can store this in a database or file)
+    cart = data.get('cart')
+    subtotal = data.get('subtotal')
+    vat = data.get('vat')
+    total = data.get('total')
+    payment = data.get('payment')
+    change = data.get('change')
+
+    # Process each item in the cart
+    for item in cart:
+        item_id = item.get('id')
+        item_name = item.get('name')
+        price = item.get('price')
+        product_image = item.get('product_image')
+        qty = item.get('qty')
+        size = item.get('size')
+        stock = item.get('stock')
+
+        # Here you should call a separate function to handle the actual sale processing
+        Sales().create_sale(sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total, payment, change)
+        Stocks().outStocks(item_id, qty, 'stock out')
+
+    # Return a success response
+    return jsonify({"message": "Payment logged successfully", "sales_reference": sales_reference}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
