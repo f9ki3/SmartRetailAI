@@ -41,6 +41,13 @@ def category():
     else:
         return redirect('/')  # Redirect if not an admin
 
+@app.route('/admin-inventory')
+def admin_inventory():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-inventory.html')
+    else:
+        return redirect('/')  # Redirect if not an admin
+
 @app.route('/admin-products')
 def products():
     if 'user_type' in session and session['user_type'] == 'admin':
@@ -162,6 +169,16 @@ def delete_product():
     Products().delete_product(id)
     return jsonify(1)
 
+@app.route('/add_stock', methods=['POST'])
+def add_stock():
+    # Get data from the request
+    data = request.form
+    product_id = data.get('id')
+    product_stocks = data.get('stocks')
+    type = 'stock in'
+    Stocks().addStocks(product_id, product_stocks, type)
+
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

@@ -48,9 +48,8 @@ class Tables(Database):  # Inherit from Database
             CREATE TABLE IF NOT EXISTS Stocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 product_id INTEGER,
-                stock_in INTEGER DEFAULT 0,
-                stock_out INTEGER DEFAULT 0,
-                date TEXT NOT NULL,
+                type INTEGER DEFAULT 0,
+                stocks INTEGER NOT NULL,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id) REFERENCES Products (id)
             );

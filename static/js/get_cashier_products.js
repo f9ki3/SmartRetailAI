@@ -55,19 +55,21 @@ $(document).ready(function() {
                         $('#product-grid').append(
                             `<div class="col-6 col-md-4">
                                 <div class="p-3">
-                                    <div style="position: relative; ">
+                                    <div style="position: relative;">
                                         <div style="width: 100%; height: 200px;">
                                             <img style="object-fit: cover; width: 100%; height: 100%;" src="${item.product_image}" alt="Product Image">
-                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5 add-to-cart" data-id="${item.id}" data-image="${item.product_image}" data-name="${item.name}" data-size="${item.size}" data-price="${item.price}">
+                                            <button style="position: absolute; right: 10px; bottom: 10px;" class="btn border btn-dark rounded-5 add-to-cart" data-id="${item.id}" data-image="${item.product_image}" data-name="${item.name}" data-size="${item.size}" data-price="${item.price}" ${item.stock <= 0 ? 'disabled' : ''}>
                                                 <i class="bi bi-cart-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                     <p class="mb-0">${item.name}</p>
                                     <h6 class="fw-bolder mt-0">₱ ${item.price.toFixed(2)} PHP</h6>
+                                    <p class="mb-0">${item.stock <= 0 ? 'No stock' : `In stock: ${item.stock}`}</p>
                                 </div>
                             </div>`
                         );
+                        
                     });
                 } else {
                     // Show no results image or message
@@ -86,6 +88,14 @@ $(document).ready(function() {
                     const productName = $(this).data('name');
                     const productSize = $(this).data('size');
                     const productPrice = parseFloat($(this).data('price'));
+                    const productStock = parseInt($(this).closest('.p-3').find('p.mb-0').text().split(': ')[1]) || 0; // Get the stock value
+
+                    // Check stock availability
+                    if (productStock <= 0) {
+                        alert('Sorry, this item is out of stock.');
+                        return; // Exit if there's no stock
+                    }
+
                     // Create the cart item object
                     const cartItem = {
                         id: productId,
@@ -116,8 +126,9 @@ $(document).ready(function() {
 
                     // Optional: Provide user feedback (e.g., alert, notification)
                     alert(`${productName} has been added to your cart.`);
-                    populateCart()
+                    populateCart();
                 });
+
             },
             error: function(xhr, status, error) {
                 alert('Error fetching products: ' + error);
@@ -193,10 +204,9 @@ function populateCart() {
     }
 }
 
-// Call the function to populate the cart on page load
 $(document).ready(function() {
     populateCart();
-    
+
     // Event delegation to handle removing items from the cart
     $('#cart-items').on('click', '.remove-item', function() {
         const productId = $(this).data('id');
@@ -213,12 +223,12 @@ $(document).ready(function() {
     });
 
     // Function to update the quantity in local storage
-    function updateCartQuantity(productId, newQty) {
+    function updateCartQuantity(productId, newQty, maxQty) {
         // Get cart items from local storage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Ensure the quantity is at least 1
-        newQty = Math.max(1, newQty); // Set to 1 if less than 1
+        // Ensure the quantity is at least 1 and does not exceed max quantity
+        newQty = Math.max(1, Math.min(newQty, maxQty)); // Set to 1 if less than 1 or max if exceeded
 
         // Find the item and update its quantity
         const itemIndex = cart.findIndex(item => item.id === productId);
@@ -228,21 +238,28 @@ $(document).ready(function() {
 
         // Update local storage
         localStorage.setItem('cart', JSON.stringify(cart));
-        
     }
 
     // Event delegation to handle changes in quantity inputs
     $('#cart-items').on('input', '.qty-input', function() {
         const productId = $(this).data('id');
         let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
-        updateCartQuantity(productId, newQty); // Update local storage immediately
+
+        // Get the stock for the item
+        const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0; // Assuming stock is displayed in an element with class 'stock-value'
+
+        updateCartQuantity(productId, newQty, maxQty); // Update local storage immediately
     });
 
     // Update quantity when input loses focus (click outside)
     $('#cart-items').on('blur', '.qty-input', function() {
         const productId = $(this).data('id');
         let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
-        updateCartQuantity(productId, newQty); // Update local storage
+        
+        // Get the stock for the item
+        const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0;
+
+        updateCartQuantity(productId, newQty, maxQty); // Update local storage
         populateCart();
     });
 
@@ -251,12 +268,17 @@ $(document).ready(function() {
         if (event.which === 13) { // Enter key
             const productId = $(this).data('id');
             let newQty = parseInt($(this).val()) || 1; // Default to 1 if invalid input
-            updateCartQuantity(productId, newQty); // Update local storage
+            
+            // Get the stock for the item
+            const maxQty = parseInt($(this).closest('.cart-item').find('.stock-value').text()) || 0;
+
+            updateCartQuantity(productId, newQty, maxQty); // Update local storage
             $(this).blur(); // Trigger blur to close the input field
             populateCart();
         }
     });
 });
+
 
 // Function to format numbers as monetary values
 // Function to format numbers as monetary values
