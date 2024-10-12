@@ -21,11 +21,15 @@ class Tables(Database):  # Inherit from Database
                 category_id INTEGER,
                 price REAL NOT NULL,
                 stock INTEGER NOT NULL DEFAULT 0,
-                barcode_id TEXT UNIQUE,
-                barcode_image BLOB,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (category_id) REFERENCES Category (id)
+                size TEXT,  -- Optional size column
+                barcode_id TEXT UNIQUE,  -- Ensure unique barcode for each product
+                barcode_image TEXT,  -- Store the barcode image as binary data
+                product_image TEXT,  -- Store the product image as binary data
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when the product is created
+                FOREIGN KEY (category_id) REFERENCES Category (id)  -- Reference to the Category table
             );
+
+
 
             CREATE TABLE IF NOT EXISTS Accounts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,28 +41,37 @@ class Tables(Database):  # Inherit from Database
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                date_created TEXT DEFAULT CURRENT_TIMESTAMP  -- Changed column name to date_created
             );
+
 
             CREATE TABLE IF NOT EXISTS Stocks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 product_id INTEGER,
-                stock_in INTEGER DEFAULT 0,
-                stock_out INTEGER DEFAULT 0,
-                date TEXT NOT NULL,
+                type INTEGER DEFAULT 0,
+                stocks INTEGER NOT NULL,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id) REFERENCES Products (id)
             );
 
             CREATE TABLE IF NOT EXISTS Sales (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER,
-                quantity INTEGER NOT NULL,
-                total_price REAL NOT NULL,
-                sale_date TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (product_id) REFERENCES Products (id)
+                sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                sales_reference TEXT NOT NULL,
+                item_id INTEGER NOT NULL,
+                item_name TEXT NOT NULL,
+                price REAL NOT NULL,
+                product_image TEXT,
+                qty INTEGER NOT NULL,
+                size TEXT,
+                stock INTEGER NOT NULL,
+                subtotal TEXT NOT NULL,
+                total_amount TEXT NOT NULL,
+                payment REAL NOT NULL,
+                change TEXT NOT NULL,
+                sale_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (item_id) REFERENCES CartItems(id)  -- assuming you have a CartItems table
             );
+
         ''')
         self.conn.commit() 
         self.conn.close()

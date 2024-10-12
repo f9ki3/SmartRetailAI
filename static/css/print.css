@@ -1,0 +1,8 @@
+@media print {
+    #receipt_page {
+        display: block; /* Show receipt_page */
+    }
+    #pos_page {
+        display: none; /* Hide pos_page */
+    }
+}

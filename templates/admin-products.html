@@ -1,0 +1,170 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRetailAI</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    <div class="container">
+        {% include 'admin-navigation.html' %}
+        <div id="product_delete_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Deleted successfully!
+            </div>
+        </div>
+        <div id="product_add_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Added product successfully!
+            </div>
+        </div>
+        <div id="product_edit_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Updated product successfully!
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {% include 'admin-nav.html' %}
+            </div>
+            <div class="col-10">
+                <h3>Products</h3>
+                <hr>
+                <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addProduct">Add Product</button>
+                <div>
+                    <table id="data-table-products" class="display" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;" >ID</th>
+                                <th style="width: 15%;" >Image</th>
+                                <th style="width: 30%;">Product Name</th>
+                                <th style="width: 20%;" >Date</th>
+                                <th style="width: 5%;">Size</th> <!-- Added size -->
+                                <th style="width: 10%;" >Price</th> <!-- Added price -->
+                                <th style="width: 5%;" >Stock</th> <!-- Added stock -->
+                                <th style="width: auto;">Barcode</th> <!-- Added barcode -->
+                                <th style="width: 5%;" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'footer_links.html' %}
+</body>
+</html>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProduct" tabindex="-1" aria-labelledby="deleteProductLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content p-5">
+        <div class="modal-body d-flex justify-content-center flex-column align-items-center">
+          <input id="product_id" type="hidden">
+          <div style="background-color: rgb(252, 230, 230); border-radius: 100%; padding: 20px">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
+          </div>
+          <h4 class="text-center fw-bolder mb-3 mt-3">Are you sure?</h4>
+          <p class="text-center text-muted">This action cannot be undone. All product data will be lost.</p>
+        </div>
+        <div class="d-flex flex-column">
+          <button onclick="deleteProduct()" type="button" class="btn p-2 btn-sm btn-danger">Delete</button>
+          <button id="cancel_product" type="button" class="btn p-2 mt-2 btn-sm btn-dark border" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title fs-5 fw-bolder" id="addProductLabel">Add Product</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <div class="mb-3">
+                    <label for="product_image" class="form-label" style="font-size: 12px;">Product Image:</label>
+                    <input type="file" id="product_image" class="form-control form-control-sm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="product_name" class="form-label" style="font-size: 12px;">Product Name:</label>
+                    <textarea id="product_name" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3">
+                        <label for="product_price" class="form-label" style="font-size: 12px;">Product Price:</label>
+                        <input id="product_price" type="number" class="form-control form-control-sm" placeholder="Enter product price" required>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                        <label for="category-select" class="form-label" style="font-size: 12px;">Select Category:</label>
+                        <select id="category-select" class="form-select form-select-sm" required>
+                            <option value="" disabled selected>Select</option>
+                            <!-- Populate options dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md mb-3">
+                        <label class="form-label" style="font-size: 12px;">Select Size:</label>
+                        <div class="btn-group" role="group" aria-label="Size selection">
+                            <input type="radio" class="btn-check" name="size" id="btnradio1" value="XS" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio1">XS</label>
+                            
+                            <input type="radio" class="btn-check" name="size" id="btnradio2" value="S" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio2">S</label>
+                            
+                            <input type="radio" class="btn-check" name="size" id="btnradio3" value="M" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio3">M</label>
+                            
+                            <input type="radio" class="btn-check" name="size" id="btnradio4" value="L" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio4">L</label>
+                            
+                            <input type="radio" class="btn-check" name="size" id="btnradio5" value="XL" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio5">XL</label>
+                            
+                            <input type="radio" class="btn-check" name="size" id="btnradio6" value="XXL" autocomplete="off" required>
+                            <label class="btn btn-outline-secondary btn-sm" for="btnradio6">XXL</label>
+                        </div>
+                    </div>
+                
+                    <div class="col-12 col-md mb-3">
+                        <label for="barcode_id" class="form-label" style="font-size: 12px;">Barcode ID:</label>
+                        <input id="barcode_id" type="text" class="form-control form-control-sm" placeholder="Enter barcode id" required>
+                    </div>
+                </div>
+            </div>
+        
+          <div class="modal-footer">
+              <button id="cancel_product_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+              <button onclick="addProduct()" type="button" class="btn btn-sm btn-success">Save changes</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- View Product Modal -->
+<div class="modal fade" id="viewProduct" tabindex="-1" aria-labelledby="viewProductLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bolder" id="viewProductLabel">View Product</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input id="product_id_view" type="hidden">
+            <p class="m-0 mb-1" style="font-size: 12px;">Product Name: </p>
+            <input id="edit_product_name" type="text" class="form-control" placeholder="Enter product name">
+        </div>
+        <div class="modal-footer">
+          <button id="cancel_product_edit" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+          <button onclick="editProduct()" type="button" class="btn btn-sm btn-success">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,102 @@
+/* Auth html fles */
+.btn-hover:hover {
+    background-color: #ebfff1; /* Example hover background color */
+}
+
+/* .body-color{
+    background-color: rgb(246, 250, 255);
+} */
+
+.nav-color{
+    background-color: white;
+}
+
+/* Remove default background color when an item is clicked */
+.custom-dropdown-item {
+    background-color: transparent;
+    color: inherit;
+}
+
+.custom-dropdown-item:focus,
+.custom-dropdown-item:hover {
+    background-color: #f8f9fa; /* Add your hover background color */
+    color: #000; /* Add your hover text color */
+}
+
+.custom-dropdown-item:active {
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+
+.burger-menu2{
+    display: none;
+}
+
+.fade-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    pointer-events: none; /* Prevents interaction with the fade layer */
+}
+/* Remove table borders */
+#data-table-categories {
+    border: none !important;
+}
+/* Remove borders from table cells */
+#data-table-categories th, 
+#data-table-categories td {
+    border: none !important;
+}
+
+/* Remove table borders */
+#data-table-products {
+    border: none !important;
+}
+/* Remove borders from table cells */
+#data-table-products th, 
+#data-table-products td {
+    border: none !important;
+}
+
+/* Custom font size for pagination */
+.dataTables_paginate {
+    font-size: 12px; /* Adjust this value as needed */
+}
+.dataTables_info {
+    font-size: 12px; /* Adjust this value as needed */
+}
+/* Custom font size for the search input */
+.dataTables_length{
+    font-size: 12px; /* Adjust font size */
+}
+.dataTables_filter{
+    font-size: 12px;
+}
+
+.btn-group.is-invalid {
+    border: 1px solid red; /* Change the border color to red */
+    border-radius: 0.25rem; /* Optional: to maintain border radius */
+}
+
+@media (max-width: 767px) {
+    #waste_level1 {
+        display: none;
+    }
+
+    .burger-menu1 {
+        display: none;
+    }
+
+    .burger-menu2 {
+        display: block;
+    }
+
+    .nav-admin{
+        display: none;
+    }
+
+}

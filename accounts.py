@@ -1,6 +1,10 @@
 from database import Database
 
 class Accounts(Database):
+    def __init__(self):
+        super().__init__()  # Initialize the parent class
+        self.create_admin_account()  # Create admin account on initialization
+
     def create_account(self, fname, lname, address, contact, email, username, password, role, date_created=None):
         # Use the current date if no date is provided
         if date_created is None:
@@ -15,6 +19,29 @@ class Accounts(Database):
         ''', (fname, lname, address, contact, email, username, password, role))
         self.conn.commit()
         print(f"Account for '{username}' created successfully!")
+
+    def create_admin_account(self):
+        # Create an admin account with default values
+        try:
+            self.cursor.execute('''
+                SELECT * FROM Accounts WHERE role = 'cashier';
+            ''')
+            if not self.cursor.fetchone():  # Check if admin already exists
+                self.create_account(
+                    fname="Cashier",
+                    lname="User",
+                    address="Cashier Address",
+                    contact="1234567890",
+                    email="cashier@example.com",  # Change if necessary
+                    username="cashier",
+                    password="cashier",  # Default password
+                    role="cashier"
+                )
+                print("Admin account created successfully.")
+            else:
+                print("Admin account already exists.")
+        except Exception as e:
+            print(f"Error creating admin account: {e}")
 
     def read_accounts(self):
         # Retrieve all accounts
@@ -75,7 +102,35 @@ class Accounts(Database):
         ''', (account_id,))
         self.conn.commit()
         print(f"Account ID {account_id} deleted successfully!")
+    
+    def login(self, username, password):
+        try:
+            # Query the database for the user with the provided username and password
+            self.cursor.execute('''
+                SELECT * FROM Accounts WHERE username = ? AND password = ?;
+            ''', (username, password))
+            result = self.cursor.fetchone()
+            
+            # Check if the account exists
+            if result:
+                # Assuming the table columns are 'id', 'username', 'password', 'email', etc.
+                column_names = [desc[0] for desc in self.cursor.description]
+                user_data = dict(zip(column_names, result))
+                return user_data  # Return the user information as a dictionary
+            else:
+                print("Invalid username or password.")
+                return None  # Return None if no matching account
+        except Exception as e:
+            print(f"Error during login: {e}")
+            return None  # Return None if an error occurs
+
+
+
 
     def close_connection(self):
         # Close the database connection
         self.conn.close()
+
+
+if __name__ == "__main__":
+    Accounts().create_admin_account()

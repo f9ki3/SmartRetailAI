@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRetailAI</title>
+    {% include 'header_links.html' %}
+</head>
+<body>
+    <div class="container">
+        {% include 'admin-navigation.html' %}
+        <div id="category_delete_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Deleted success!
+            </div>
+        </div>
+        <div id="category_add_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Added category success!
+            </div>
+        </div>
+        <div id="category_edit_alert" style="display: none;">
+            <div style="position: fixed; bottom: 0" class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>Updated category success!
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {% include 'admin-nav.html' %}
+            </div>
+            <div class="col-10">
+                <h3>Categories</h3>
+                <hr>
+                <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addCategory">Add Category</button>
+                <div>
+                    <table id="data-table-categories" class="display " style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">ID</th>
+                                <th style="width: 35%">Date</th>
+                                <th style="width: 35%">Category Name</th>
+                                <th style="width: 10%" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <!-- Data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    
+    {% include 'footer_links.html' %}
+</body>
+</html>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content p-5">
+        <div class="modal-body d-flex justify-content-center flex-column align-items-center">
+          <input id="category_id" type="hidden">
+          <div style="background-color: rgb(252, 230, 230); border-radius: 100%; padding: 20px">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
+          </div>
+          <h4 class="text-center fw-bolder mb-3 mt-3">Are you sure?</h4>
+          <p class="text-center text-muted">This can be undo once you deleted it. All the data in here will be lost.</p>
+        </div>
+        <div class="d-flex flex-column">
+          <button onclick="deleteCategory()" type="button" class="btn p-2 btn-sm btn-danger">Delete</button>
+          <button id="cancel_category" type="button" class="btn p-2 mt-2 btn-sm btn-dark border" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal -->
+<div class="modal fade" id="addCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bolder" id="exampleModalLabel">Add Category</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="m-0 mb-1" style="font-size: 12px;">Category Name: </p>
+            <input id="category_name" type="text" class="form-control form-control-sm" placeholder="Enter category name">
+        </div>
+        <div class="modal-footer">
+          <button id="cancel_category_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+          <button onclick="addCategory()" type="button" class="btn btn-sm btn-success">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+<div class="modal fade" id="viewCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bolder" id="exampleModalLabel">View Category</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input id="category_id_view" type="hidden">
+            <p class="m-0 mb-1" style="font-size: 12px;">Category Name: </p>
+            <input id="edit_cat_name" type="text" class="form-control" placeholder="Enter category name">
+        </div>
+        <div class="modal-footer">
+          <button id="cancel_category_edit" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+          <button onclick="editCategory()" type="button" class="btn btn-sm btn-success">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
