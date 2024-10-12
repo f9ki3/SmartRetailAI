@@ -85,7 +85,6 @@ function deleteProduct() {
     });
 }
 
-
 function addProduct() {
     // Collecting input values
     const productName = $('#product_name').val().trim(); // Trim whitespace
@@ -110,12 +109,12 @@ function addProduct() {
         return;
     }
 
-    // Validate barcodeId to ensure it's 12 digits
+    // Validate barcodeId to ensure it's 13 digits
     if (!barcodeId) {
-        // Generate a random 12-digit number as a string
-        barcodeId = Math.floor(Math.random() * 1e12).toString().padStart(12, '0'); // Pad to ensure 12 digits
-    } else if (barcodeId.length !== 12 || isNaN(barcodeId)) {
-        alert("Barcode ID must be exactly 12 digits.");
+        // Generate a random 13-digit number
+        barcodeId = Math.floor(Math.random() * 1e13).toString().padStart(13, '0'); // Ensure 13 digits
+    } else if (barcodeId.length !== 13 || isNaN(barcodeId)) {
+        alert("Barcode ID must be exactly 13 digits.");
         return;
     }
 
@@ -148,6 +147,7 @@ function addProduct() {
         }
     });
 }
+
 
 
 

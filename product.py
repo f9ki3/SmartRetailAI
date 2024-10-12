@@ -5,21 +5,21 @@ import os
 import time
 
 class Products(Database):
-
     def create_product(self, name, category_id, price, stock=0, size=None, barcode_id=None, product_image=None):
         try:
-            # Validate barcode_id to ensure it is 12 digits long
-            if barcode_id and (len(barcode_id) != 12 or not barcode_id.isdigit()):
-                raise ValueError("barcode_id must be exactly 12 digits.")
+            # Validate barcode_id to ensure it is exactly 13 digits long
+            if barcode_id and (len(barcode_id) != 13 or not barcode_id.isdigit()):
+                raise ValueError("barcode_id must be exactly 13 digits.")
 
             # Generate a barcode image if barcode_id is provided
             barcode_image_path = self.generate_barcode_image(barcode_id) if barcode_id else None
+            barcode_ids = barcode_image_path.replace('.png', '').replace('static/barcodes/', '')
 
             # Insert a new product with size, barcode_id, barcode image path, and product image path
             self.cursor.execute('''
                 INSERT INTO Products (name, category_id, price, stock, size, barcode_id, barcode_image, product_image) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            ''', (name, category_id, price, stock, size, barcode_id, barcode_image_path, product_image))
+            ''', (name, category_id, price, stock, size, barcode_ids, barcode_image_path, product_image))
 
             # Commit the transaction to the database
             self.conn.commit()
@@ -34,16 +34,16 @@ class Products(Database):
         if not os.path.exists(save_path):
             os.makedirs(save_path)  # Create the directory if it doesn't exist
 
-        # Ensure barcode_id is valid for EAN-13 (must be 12 digits)
-        if len(barcode_id) != 12 or not barcode_id.isdigit():
-            raise ValueError("EAN must have 12 digits.")
+        # Ensure barcode_id is valid for EAN-13 (must be 13 digits)
+        if len(barcode_id) != 13 or not barcode_id.isdigit():
+            raise ValueError("EAN must have 13 digits.")
 
-        # Generate barcode image using the barcode_id
+        # Generate barcode image using the barcode_id directly
         EAN = barcode.get_barcode_class('ean13')
         ean = EAN(barcode_id, writer=ImageWriter())
 
-        # Save barcode image as a file
-        file_name = f"{barcode_id}.png"  # Filename with one .png extension
+        # Save barcode image using the full 13-digit barcode_id
+        file_name = f"{ean}.png"  # Use the full 13 digits for the filename
         file_path = os.path.join(save_path, file_name)
 
         try:
@@ -64,6 +64,10 @@ class Products(Database):
 
         # Return the file path as a string (path to the barcode image file)
         return file_path
+
+
+
+    
 
     def read_products(self):
         # Retrieve all products along with their category names

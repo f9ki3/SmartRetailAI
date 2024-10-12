@@ -1,18 +1,8 @@
-#receipt_page{
-    display: none;
-}
-
 @media print {
-    #pos_page{
-        display: none;
+    #receipt_page {
+        display: block; /* Show receipt_page */
     }
-    
-    #receipt_page{
-        display: block;
-    }
-
-    /* Adjust page margins */
-    @page {
-        margin: 20mm; /* Set margins for the printed page */
+    #pos_page {
+        display: none; /* Hide pos_page */
     }
 }

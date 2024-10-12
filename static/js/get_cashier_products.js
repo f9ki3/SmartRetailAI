@@ -513,11 +513,12 @@ function logPaymentDetails() {
                         var subtotal = parseFloat(firstItem.subtotal.replace(/,/g, '')) || 0; // Ensure it's a number
                         var vat = subtotal * 0.12; // 12% of subtotal
             
-                        // Populate subtotal, total_amount, payment, change, and vat with the "receipt_" prefix
+                        // Populate subtotal, total_amount, payment, change, vat, and sales_date with the "receipt_" prefix
                         $('#receipt_subtotal').text('₱' + subtotal.toLocaleString());
                         $('#receipt_totalAmount').text('₱' + parseFloat(firstItem.total_amount.replace(/,/g, '')).toLocaleString());
                         $('#receipt_payment').text('₱' + parseFloat(firstItem.payment).toLocaleString());
                         $('#receipt_change').text('₱' + parseFloat(firstItem.change).toLocaleString());
+                        $('#receipt_sales_date, #receipt_sales_dates').text(firstItem.sale_date); // Adjust format as needed
                         $('#receipt_vat').text('₱' + vat.toLocaleString()); // Populate VAT
             
                         // Loop through the response to create table rows
@@ -558,3 +559,16 @@ $(document).ready(function() {
         logPaymentDetails(); // Call the logPaymentDetails function
     });
 });
+
+
+function printReceipt() {
+    // Print the receipt
+    $('#close_receipt').click()
+    remove_cart()
+    // Hide POS page and show receipt page
+    document.getElementById('pos_page').style.display = 'none';
+    document.getElementById('receipt_page').style.display = 'block';
+    setTimeout(() => {
+        window.print();
+    }, 3000);
+}
