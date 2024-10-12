@@ -5,7 +5,7 @@
     <title>SmartRetailAI</title>
     {% include 'header_links.html' %}
 </head>
-<body>
+<body id="pos_page">
     <div class="container">
         {% include 'nav.html' %}
         <div class="row">
@@ -73,8 +73,121 @@
             </div>
         </div>
     </div>
-    
+        
+    <!-- Modal structure -->
+    <div class="modal fade" id="receipt" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bolder" id="addProductLabel">Receipt</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5" style="font-size: 12px; max-height: 400px; overflow-y: auto;">
+                    <div class="w-100 d-flex flex-column justify-content-end align-items-center">
+                        <h6 class="fw-bolder m-0 p-0">OFFSET CLOTHING</h6>
+                        <p class="m-0 p-0">6B Marcelo Building Caruncho Avenue, San Nicolas Pasig City</p>
+                        <p class="m-0 p-0">offset@gmail.com</p>
+                        <p class="m-0 p-0">09567612761</p>
+                    </div>
+                    <div class="w-100 mt-3">
+                        <table style="font-size: 12px; width: 100%;" id="receiptTable">
+                            <thead>
+                                <tr>
+                                    <td width="80%"><h6 class="fw-bolder">Items</h6></td>
+                                    <td width="20%"><h6 class="fw-bolder text-end">Price</h6></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="w-100 mt-3">
+                        <h6 class="fw-bolder">Summary</h6>
+                        <table style="font-size: 12px; width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td width="80%">
+                                        <p class="m-0">Subtotal</p>
+                                        <p class="m-0">VAT (Included)</p>
+                                        <p class="m-0">Total Amount</p>
+                                        <p class="m-0">Payment</p>
+                                        <p class="m-0">Change</p>
+                                    </td>
+                                    <td width="20%">
+                                        <p id="receipt_subtotal" class="m-0 d-flex justify-content-end">₱ 100.00</p>
+                                        <p id="receipt_vat" class="m-0 d-flex justify-content-end">₱ 12.00</p>
+                                        <p id="receipt_totalAmount" class="m-0 d-flex justify-content-end">₱ 112.00</p>
+                                        <p id="receipt_payment" class="m-0 d-flex justify-content-end">₱ 150.00</p>
+                                        <p id="receipt_change" class="m-0 d-flex justify-content-end">₱ 38.00</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- Add a function to close the modal programmatically if needed -->
+                    <button id="cancel_product_add" type="button" class="btn btn-sm btn-dark" onclick="closeModal()">Close</button>
+                    <button onclick="addStock()" type="button" class="btn btn-sm btn-success">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     {% include 'footer_links.html' %}
 </body>
 </html>
+
+
+
+<div id="receipt_page">
+    <div style="display: flex; width: 100%; justify-content: center;">
+        <div class="border p-3 pb-5 pt-5 mt-5" style="width: 189.44px">
+            <div class="w-100">
+                <h6 class="text-center fw-bolder m-0 p-0">OFFSET CLOTHING</h6>
+                <p class="text-center m-0 p-0" style="font-size: 12px;">6B Marcelo Building Caruncho Avenue, San Nicolas Pasig City</p>
+                <p class="text-center m-0 p-0" style="font-size: 12px;">offset@gmail.com</p>
+                <p class="text-center m-0 p-0" style="font-size: 12px;">09567612761</p>
+            </div>
+            <div class="w-100 mt-3">
+                <table style="font-size: 12px; width: 100%;" id="receiptTable">
+                    <thead>
+                        <tr>
+                            <td width="70%"><h6 class="fw-bolder">Items</h6></td>
+                            <td width="30%"><h6 class="fw-bolder text-end">Price</h6></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="w-100 mt-3">
+                <h6 class="fw-bolder">Summary</h6>
+                <table style="font-size: 12px; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td width="60%">
+                                <p class="m-0">Subtotal</p>
+                                <p class="m-0">VAT (Included)</p>
+                                <p class="m-0">Total Amount</p>
+                                <p class="m-0">Payment</p>
+                                <p class="m-0">Change</p>
+                            </td>
+                            <td width="40%">
+                                <p id="receipt_subtotal" class="m-0 d-flex justify-content-end">₱ 100.00</p>
+                                <p id="receipt_vat" class="m-0 d-flex justify-content-end">₱ 12.00</p>
+                                <p id="receipt_totalAmount" class="m-0 d-flex justify-content-end">₱ 112.00</p>
+                                <p id="receipt_payment" class="m-0 d-flex justify-content-end">₱ 150.00</p>
+                                <p id="receipt_change" class="m-0 d-flex justify-content-end">₱ 38.00</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

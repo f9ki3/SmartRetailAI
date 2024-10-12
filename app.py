@@ -182,13 +182,11 @@ def add_stock():
 
 @app.route('/create_sale', methods=['POST'])
 def create_sale():
-    # Generate a 10-digit sales reference
-    sales_reference = str(random.randint(1000000000, 9999999999))
-    
     # Get the JSON data from the request
     data = request.get_json()
 
     # Log the payment details (you can store this in a database or file)
+    sales_reference = data.get('reference_id')
     cart = data.get('cart')
     subtotal = data.get('subtotal')
     vat = data.get('vat')
@@ -212,6 +210,13 @@ def create_sale():
 
     # Return a success response
     return jsonify({"message": "Payment logged successfully", "sales_reference": sales_reference}), 200
+
+@app.route('/get_receipt', methods=['POST'])
+def get_receipt():
+    # Get reference_id from the request
+    reference_id = request.form.get('reference_id')
+    data = Sales().get_sale_by_reference(reference_id)
+    return jsonify(data) 
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

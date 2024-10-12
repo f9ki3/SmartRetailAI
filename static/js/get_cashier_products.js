@@ -449,11 +449,17 @@ $(document).ready(function() {
 
 
 // Function for payment
+// Function to generate a 10-digit reference ID
+function generateReferenceId() {
+    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+}
+
 // Function to log cart details and payment information
 function logPaymentDetails() {
     // Get the cart from local storage
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
+    const reference_id = generateReferenceId(); // Generate the reference ID
+
     // Get the subtotal, VAT, total, payment, and change values as plain text
     const subtotal = $('#subtotal').text().replace('₱', '').trim();
     const vat = $('#vat').text().replace('₱', '').trim();
@@ -463,6 +469,7 @@ function logPaymentDetails() {
 
     // Prepare data to send
     const paymentData = {
+        reference_id: reference_id, // Include the reference ID
         cart: cart,
         subtotal: subtotal,
         vat: vat,
@@ -471,7 +478,7 @@ function logPaymentDetails() {
         change: change
     };
 
-    console.log(paymentData)
+    console.log(paymentData);
     // Send the details to the server via AJAX
     $.ajax({
         url: '/create_sale', // Replace with your server URL
@@ -482,7 +489,61 @@ function logPaymentDetails() {
             console.log('Payment logged successfully:', response);
             // Optionally, handle the response (e.g., show a success message)
             localStorage.removeItem('cart'); // Uncomment if you want to clear the cart
-            location.reload(); // Uncomment if you want to refresh the page
+            populateCart();
+            $('#receipt').modal('show')
+
+            $.ajax({
+                url: '/get_receipt', // Replace with your server URL
+                type: 'POST', // or 'GET' depending on your needs
+                data: {
+                    reference_id: reference_id // Assuming reference_id is a variable you have defined
+                },
+                success: function(response) {
+                    console.log('Full Response:', response); // Log the full response
+                    
+                    // Check if response is an array
+                    if (Array.isArray(response) && response.length > 0) {
+                        var rows = '';
+                        
+                        // Populate the first item into a specific <p> tag
+                        var firstItem = response[0];
+                        $('#firstItemInfo').text(firstItem.item_name + ' - ₱' + parseFloat(firstItem.price).toLocaleString() + ' x ' + firstItem.qty);
+            
+                        // Parse subtotal and calculate VAT
+                        var subtotal = parseFloat(firstItem.subtotal.replace(/,/g, '')) || 0; // Ensure it's a number
+                        var vat = subtotal * 0.12; // 12% of subtotal
+            
+                        // Populate subtotal, total_amount, payment, change, and vat with the "receipt_" prefix
+                        $('#receipt_subtotal').text('₱' + subtotal.toLocaleString());
+                        $('#receipt_totalAmount').text('₱' + parseFloat(firstItem.total_amount.replace(/,/g, '')).toLocaleString());
+                        $('#receipt_payment').text('₱' + parseFloat(firstItem.payment).toLocaleString());
+                        $('#receipt_change').text('₱' + parseFloat(firstItem.change).toLocaleString());
+                        $('#receipt_vat').text('₱' + vat.toLocaleString()); // Populate VAT
+            
+                        // Loop through the response to create table rows
+                        response.forEach(function(item) {
+                            rows += '<tr>' +
+                                        '<td><p class="m-0">' + item.item_name + ' ₱ ' + parseFloat(item.price).toLocaleString() + ' x ' + item.qty + '</p></td>' +
+                                        '<td><p class="m-0 text-end">₱ ' + (item.price * item.qty).toLocaleString() + '</p></td>' + // Correctly multiply and format
+                                    '</tr>';
+                        });
+            
+                        // Append the new rows to the table
+                        $('#receiptTable tbody').append(rows); // Replace #receiptTable with your actual table ID
+                    } else {
+                        $('#receiptTable tbody').append('<tr><td colspan="2" class="text-center">No items found.</td></tr>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error('Error:', error);
+                }
+            });
+                        
+            
+            
+            
+
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error('Error logging payment:', textStatus, errorThrown);
