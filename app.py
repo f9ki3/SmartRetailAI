@@ -104,6 +104,11 @@ def get_sales():
     data = Sales().get_sales()
     return jsonify(data)
 
+@app.route('/get_accounts', methods=['GET'])
+def get_accounts():
+    data = Accounts().read_accounts()
+    return jsonify(data)
+
 @app.route('/delete_category', methods=['POST'])
 def delete_category():
     json = request.json

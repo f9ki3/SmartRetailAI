@@ -45,11 +45,15 @@ class Accounts(Database):
 
     def read_accounts(self):
         # Retrieve all accounts
-        self.cursor.execute('SELECT id, fname, lname, address, contact, email, username, role, date_created FROM Accounts;')
+        self.cursor.execute('SELECT * FROM Accounts;')
         accounts = self.cursor.fetchall()
-        for account in accounts:
-            print(account)
-        return accounts
+        column_names = [desc[0] for desc in self.cursor.description]  # Get column names from the cursor description
+
+        # Convert each account tuple to a dictionary
+        accounts_dict = [dict(zip(column_names, account)) for account in accounts]
+
+        return accounts_dict
+
 
     def update_account(self, account_id, fname=None, lname=None, address=None, contact=None, email=None, username=None, password=None, role=None, date_created=None):
         # Update the account based on given arguments
