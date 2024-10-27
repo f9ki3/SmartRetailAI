@@ -69,6 +69,25 @@ class Sales(Database):
         except Exception as e:
             print(f"An error occurred: {e}")
             return None  # Return None or handle as needed
+    
+    def get_sale_by_reference(self, sales_reference):
+        query = '''
+        SELECT * FROM Sales WHERE sales_reference = ?;
+        '''
+        try:
+            self.cursor.execute(query, (sales_reference,))
+            rows = self.cursor.fetchall()  # Fetch all matching records
+
+            # Get column names from the cursor description
+            column_names = [description[0] for description in self.cursor.description]
+            
+            # Convert rows to a list of dictionaries
+            result = [dict(zip(column_names, row)) for row in rows]
+            
+            return result  # Return the result set as a list of dictionaries
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None  # Return None or handle as needed
         
     def delete_sales(self, sale_id):
             """Delete a sales record by sale_id."""

@@ -73,6 +73,10 @@ def products():
 def cashier_pos():
     return render_template('cashier-pos.html')
 
+@app.route('/cashier-transaction')
+def cashier_transaction():
+    return render_template('cashier-transaction.html')
+
 
 # API Calls/Endpoints
 @app.route('/post_login', methods=['POST'])

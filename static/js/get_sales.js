@@ -10,8 +10,8 @@ $(document).ready(function() {
             // Loop through the data and append rows to the table
             data.forEach(function(item) {
                 $('#data-table-sales tbody').append(
-                    `<tr data-bs-toggle="modal" data-bs-target="#viewSale" class="tr-sales" data-id="${item.id}" style="cursor: pointer">
-                        <td class="pt-3 pb-3 text-center">${item.sales_reference}</td>
+                    `<tr onclick="cashier_print_receipt('${item.sales_reference}')" class="tr-sales" data-id="${item.id}" style="cursor: pointer">
+                        <td class="pt-3 pb-3 ps-4">${item.sales_reference}</td>
                         <td class="pt-3 pb-3">${item.sale_date}</td>
                         <td class="pt-3 pb-3">${item.subtotal}</td>
                         <td class="pt-3 pb-3 text-center">${item.total_amount}</td> 
@@ -22,7 +22,7 @@ $(document).ready(function() {
                         </td>
                     </tr>`
                 );
-            });
+            });            
 
             // Initialize DataTable with pagination (only initialize once)
             if (!$.fn.DataTable.isDataTable('#data-table-sales')) {
