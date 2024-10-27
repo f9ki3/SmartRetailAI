@@ -259,6 +259,27 @@ def get_receipt():
     data = Sales().get_sale_by_reference(reference_id)
     return jsonify(data) 
 
+@app.route('/add_account', methods=['POST'])
+def add_account():
+    data = request.json
+    # Extract and process data here
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    contact = data.get('contact')
+    email = data.get('email')
+    username = data.get('username')
+    role = data.get('role')
+    address = data.get('address')
+    password = data.get('password')
+    
+    # Example validation or saving logic
+    if not all([first_name, last_name, contact, email, username, role, address, password]):
+        return jsonify({"error": "All fields are required"}), 400
+    
+    # Simulate successful processing
+    Accounts().create_account(first_name, last_name, address, contact, email, username, password, role, date_created=None)
+    return jsonify({"message": "Account created successfully"}), 200
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
     # Tables().createTables()

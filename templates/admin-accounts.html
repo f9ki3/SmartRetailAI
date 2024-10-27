@@ -15,7 +15,7 @@
         </div>
         <div id="stock_add_alert" style="display: none;">
             <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>Added stock successfully!
+                <i class="bi bi-check-circle-fill me-2"></i>Added New Account!
             </div>
         </div>
         <div id="stock_edit_alert" style="display: none;">
@@ -28,7 +28,10 @@
                 {% include 'admin-nav.html' %}
             </div>
             <div class="col-10">
-                <h3>Accounts</h3>
+                <div class="d-flex justify-content-between align-items-end">
+                    <h3>Accounts</h3>
+                    <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addAccount">Create Accounts</button>
+                </div>
                 <hr>
                 <!-- <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addStock">Stock Out</button> -->
                 <div>
@@ -77,7 +80,7 @@
 </div>
 
 <!-- Add Product Modal -->
-<div class="modal fade" id="addStock" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
+<div class="modal fade" id="addAccount" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
@@ -85,23 +88,162 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <input type="hidden" id="selected-id">
-              <p class="m-0 mb-2" style="font-size: 12px;">Product</p>
-              <div class="custom-select">
-                  <div class="selected rounded" id="selected-product">Select a product</div>
-                  <div class="search-container" id="search-container" style="display: none;">
-                      <input type="text" id="search-input" placeholder="Search...">
-                      <div id="product-list"></div>
-                  </div>
-                  <p class="m-0 mb-2 mt-3" style="font-size: 12px;">Stocks</p>
-                  <input style="font-size: 14px;" type="number" id="product_stocks" class="form-control mb-3" placeholder="Number of Stocks" min="1">
-              </div>
-          </div>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <label for="first_name" class="form-label" style="font-size: 12px;">First Name</label>
+                    <input type="text" id="first_name" class="form-control mb-2" placeholder="Enter firstname" style="font-size: 14px;">
+                    <div class="invalid-feedback">First name is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="last_name" class="form-label" style="font-size: 12px;">Last Name</label>
+                    <input type="text" id="last_name" class="form-control mb-2" placeholder="Enter lastname" style="font-size: 14px;">
+                    <div class="invalid-feedback">Last name is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="contact" class="form-label" style="font-size: 12px;">Contact</label>
+                    <input type="text" id="contact" class="form-control mb-2" placeholder="Enter contact" style="font-size: 14px;">
+                    <div class="invalid-feedback">Contact is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="email" class="form-label" style="font-size: 12px;">Email</label>
+                    <input type="email" id="email" class="form-control mb-2" placeholder="Enter email" style="font-size: 14px;">
+                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="username" class="form-label" style="font-size: 12px;">Username</label>
+                    <input type="text" id="username" class="form-control mb-2" placeholder="Enter username" style="font-size: 14px;">
+                    <div class="invalid-feedback">Username is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="role" class="form-label" style="font-size: 12px;">Role</label>
+                    <select id="role" class="form-select form-select-sm">
+                        <option value="">Select a role</option>
+                        <option value="admin">Administrator</option>
+                        <option value="cashier">Cashier</option>
+                    </select>
+                    <div class="invalid-feedback">Role is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-12">
+                    <label for="address" class="form-label" style="font-size: 12px;">Address</label>
+                    <textarea id="address" class="form-control" placeholder="Enter your address here..."></textarea>
+                    <div class="invalid-feedback">Address is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="password" class="form-label" style="font-size: 12px;">Password</label>
+                    <input type="password" id="password" class="form-control mb-2" placeholder="Enter password" style="font-size: 14px;">
+                    <div class="invalid-feedback">Password is required.</div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <label for="cpassword" class="form-label" style="font-size: 12px;">Confirm Password</label>
+                    <input type="password" id="cpassword" class="form-control mb-2" placeholder="Confirm password" style="font-size: 14px;">
+                    <div class="invalid-feedback">Passwords do not match.</div>
+                </div>
+            </div>
+        </div>
         
-          <div class="modal-footer">
-              <button id="cancel_product_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
-              <button onclick="addStock()" type="button" class="btn btn-sm btn-success">Save changes</button>
-          </div>
+        <div class="modal-footer">
+            <button id="cancel_account_add" type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>
+            <button onclick="addAccounts()" type="button" class="btn btn-sm btn-success">Save changes</button>
+        </div>
+        
+        <script>
+            function addAccounts() {
+                let isValid = true;
+            
+                const firstName = document.getElementById("first_name");
+                const lastName = document.getElementById("last_name");
+                const contact = document.getElementById("contact");
+                const email = document.getElementById("email");
+                const username = document.getElementById("username");
+                const role = document.getElementById("role");
+                const address = document.getElementById("address");
+                const password = document.getElementById("password");
+                const cpassword = document.getElementById("cpassword");
+            
+                function validateField(field, errorMessage) {
+                    if (!field.value.trim()) {
+                        field.classList.add("is-invalid");
+                        field.nextElementSibling.innerHTML = errorMessage;
+                        isValid = false;
+                    } else {
+                        field.classList.remove("is-invalid");
+                    }
+                }
+            
+                validateField(firstName, "First name is required.");
+                validateField(lastName, "Last name is required.");
+                validateField(contact, "Contact is required.");
+                validateField(username, "Username is required.");
+                validateField(role, "Role is required.");
+                validateField(address, "Address is required.");
+                validateField(password, "Password is required.");
+            
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.match(emailPattern)) {
+                    email.classList.add("is-invalid");
+                    email.nextElementSibling.innerHTML = "Please enter a valid email address.";
+                    isValid = false;
+                } else {
+                    email.classList.remove("is-invalid");
+                }
+            
+                if (password.value !== cpassword.value) {
+                    cpassword.classList.add("is-invalid");
+                    cpassword.nextElementSibling.innerHTML = "Passwords do not match.";
+                    isValid = false;
+                } else {
+                    cpassword.classList.remove("is-invalid");
+                }
+            
+                if (isValid) {
+                    const data = {
+                        first_name: firstName.value,
+                        last_name: lastName.value,
+                        contact: contact.value,
+                        email: email.value,
+                        username: username.value,
+                        role: role.value,
+                        address: address.value,
+                        password: password.value,
+                    };
+            
+                    fetch('/add_account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert("Error: " + data.error);
+                        } else {
+                            $('#cancel_account_add').click(); // Close modal
+                            $('#stock_add_alert').show(); // Show alert
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred. Please try again.");
+                    });
+                }
+            }
+            
+        </script>
+        
       </div>
   </div>
 </div>
