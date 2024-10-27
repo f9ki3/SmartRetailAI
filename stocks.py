@@ -61,12 +61,30 @@ class Stocks(Database):
 
     def readStocks(self, stock_id=None):
         if stock_id:
-            self.cursor.execute('SELECT * FROM Stocks WHERE id = ?;', (stock_id,))
-            return self.cursor.fetchone()  # Return a single record
+            # Join Stocks and Products tables where stock_id matches
+            self.cursor.execute('''
+                SELECT Stocks.*, Products.name AS product_name, Stocks.type AS stock_type, Stocks.stocks AS stocks
+                FROM Stocks
+                JOIN Products ON Stocks.product_id = Products.id
+                WHERE Stocks.id = ?;
+            ''', (stock_id,))
+            row = self.cursor.fetchone()
+            if row:
+                # Return single record as a dictionary
+                return {description[0]: value for description, value in zip(self.cursor.description, row)}
+            return None  # If no record found, return None
         else:
-            self.cursor.execute('SELECT * FROM Stocks;')
-            return self.cursor.fetchall()  # Return all records
+            # Join Stocks and Products tables to fetch all stock records
+            self.cursor.execute('''
+                SELECT Stocks.*, Products.name AS product_name, Stocks.type AS stock_type, Stocks.stocks AS stocks
+                FROM Stocks
+                JOIN Products ON Stocks.product_id = Products.id;
+            ''')
+            rows = self.cursor.fetchall()
+            # Return all records as a list of dictionaries
+            return [{description[0]: value for description, value in zip(self.cursor.description, row)} for row in rows]
 
-    def delete(self, stock_id):
+
+    def delete_stocks(self, stock_id):
         self.cursor.execute('DELETE FROM Stocks WHERE id = ?;', (stock_id,))
         self.conn.commit()

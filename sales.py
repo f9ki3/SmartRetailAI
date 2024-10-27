@@ -24,24 +24,50 @@ class Sales(Database):
             # Optional: Keep connection open for further operations or manage connection elsewhere
             pass
     
-    def get_sale_by_reference(self, sales_reference):
-        query = '''
-        SELECT * FROM Sales WHERE sales_reference = ?;
-        '''
+    def get_sales(self, sales_reference=None):
+        if sales_reference:
+            query = '''
+            SELECT 
+                sales_reference,
+                subtotal,
+                total_amount,
+                change,
+                sale_date,
+                subtotal * 0.12 AS vat  -- Calculate 12% of subtotal as VAT
+            FROM Sales
+            WHERE sales_reference = ?
+            GROUP BY sales_reference;
+            '''
+            parameters = (sales_reference,)
+        else:
+            query = '''
+            SELECT 
+                sales_reference,
+                subtotal,
+                total_amount,
+                change,
+                sale_date,
+                subtotal * 0.12 AS vat  -- Calculate 12% of subtotal as VAT
+            FROM Sales
+            GROUP BY sales_reference;
+            '''
+            parameters = ()
+
         try:
-            self.cursor.execute(query, (sales_reference,))
-            rows = self.cursor.fetchall()  # Fetch all matching records
+            self.cursor.execute(query, parameters)
+            rows = self.cursor.fetchall()  # Fetch all matching records (grouped)
 
             # Get column names from the cursor description
             column_names = [description[0] for description in self.cursor.description]
             
-            # Convert rows to a list of dictionaries
+            # Convert rows to a list of dictionaries, including the VAT calculation
             result = [dict(zip(column_names, row)) for row in rows]
             
             return result  # Return the result set as a list of dictionaries
         except Exception as e:
             print(f"An error occurred: {e}")
             return None  # Return None or handle as needed
+
 
 
     def close_connection(self):

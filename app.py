@@ -47,6 +47,20 @@ def admin_inventory():
         return render_template('admin-inventory.html')
     else:
         return redirect('/')  # Redirect if not an admin
+    
+@app.route('/admin-sales')
+def admin_sales():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-sales.html')
+    else:
+        return redirect('/')  # Redirect if not an admin
+
+@app.route('/admin-accounts')
+def admin_accounts():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-accounts.html')
+    else:
+        return redirect('/')  # Redirect if not an admin
 
 @app.route('/admin-products')
 def products():
@@ -79,6 +93,11 @@ def post_login():
 @app.route('/read_categories', methods=['GET'])
 def read_categories():
     data = Category().read_categories()
+    return jsonify(data)
+
+@app.route('/get_sales', methods=['GET'])
+def get_sales():
+    data = Sales().get_sales()
     return jsonify(data)
 
 @app.route('/delete_category', methods=['POST'])
@@ -162,11 +181,23 @@ def read_products():
     data = Products().read_products()
     return jsonify(data)
 
+@app.route('/read_stocks', methods=['GET'])
+def read_stocks():
+    data = Stocks().readStocks()
+    return jsonify(data)
+
 @app.route('/delete_product', methods=['POST'])
 def delete_product():
     id = request.json.get('product_id')
     print(id)
     Products().delete_product(id)
+    return jsonify(1)
+
+@app.route('/delete_stocks', methods=['POST'])
+def delete_stocks():
+    id = request.json.get('product_id')
+    print(id)
+    Stocks().delete_stocks(id)
     return jsonify(1)
 
 @app.route('/add_stock', methods=['POST'])
