@@ -208,6 +208,13 @@ def delete_sales():
     Sales().delete_sales(id)
     return jsonify(1)
 
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    id = request.json.get('product_id')
+    print(id)
+    Accounts().delete_account(id)
+    return jsonify(1)
+
 @app.route('/delete_stocks', methods=['POST'])
 def delete_stocks():
     id = request.json.get('product_id')
@@ -264,6 +271,16 @@ def get_receipt():
     data = Sales().get_sale_by_reference(reference_id)
     return jsonify(data) 
 
+@app.route('/get_one_account', methods=['GET'])
+def get_one_account():
+    # Get account_id from the query parameters
+    account_id = request.args.get('id')  # Use args for GET parameters
+    if account_id is not None:
+        data = Accounts().read_account_by_id(account_id)  # Create a method to fetch account by ID
+        return jsonify(data)
+    else:
+        return jsonify({'error': 'Account ID is required'}), 400  # Handle missing ID
+
 @app.route('/add_account', methods=['POST'])
 def add_account():
     data = request.json
@@ -284,6 +301,25 @@ def add_account():
     # Simulate successful processing
     Accounts().create_account(first_name, last_name, address, contact, email, username, password, role, date_created=None)
     return jsonify({"message": "Account created successfully"}), 200
+
+@app.route('/update_account', methods=['POST'])
+def update_account():
+    data = request.json
+    print(data)
+    # Extract data from the received JSON
+    account_id = data.get('id')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    contact = data.get('contact')
+    email = data.get('email')
+    username = data.get('username')
+    role = data.get('role')
+    address = data.get('address')
+    password = data.get('password')
+
+    Accounts().update_account(account_id, first_name, last_name, address, contact, email, username, password, role, date_created=None)
+    # Assuming everything went well
+    return jsonify(1)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

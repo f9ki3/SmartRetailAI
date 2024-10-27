@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     // Fetch the JSON data from the Flask endpoint
     $.ajax({
@@ -43,6 +42,42 @@ $(document).ready(function() {
                 });
             }
 
+            // Add click event listener to rows
+            $('#data-table-accounts tbody').on('click', 'tr', function() {
+                const accountId = $(this).data('id');
+                console.log('Clicked account ID:', accountId);
+                
+                // Fetch the account details from the server
+                $.ajax({
+                    url: '/get_one_account',  // Change this to the correct endpoint for fetching one account
+                    method: 'GET',
+                    data: { id: accountId },  // Pass the account ID as data
+                    dataType: 'json', // Expect a JSON response
+                    success: function(account) {
+                        console.log(account);  
+                        // Populate the modal fields with the account data
+                        $('.id').val(account.id); // Assuming 'fname' is the first name
+                        $('.first_name').val(account.fname); // Assuming 'fname' is the first name
+                        $('.last_name').val(account.lname); // Assuming 'lname' is the last name
+                        $('.contact').val(account.contact);
+                        $('.email').val(account.email);
+                        $('.username').val(account.username);
+                        $('.role').val(account.role); // Assuming 'role' matches the select option values
+                        $('.address').val(account.address);
+                        // Optionally, you can set a default password or leave it blank
+                        $('.password').val(account.password); // Leave this blank for security
+                        
+                        // Show the modal
+                        $('#updateAccount').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error fetching account data: ' + error);
+                    }
+                });
+                
+            });
+            
+
             // Add click event listener to delete buttons (using delegation for dynamic content)
             $('#data-table-accounts tbody').on('click', '.btn-delete-account', function(event) {
                 event.stopPropagation(); // Prevent triggering row click
@@ -55,30 +90,32 @@ $(document).ready(function() {
         }
     });
 });
-// function deleteProduct() {
-//     const product_id = $('#sale_id').val();
-//     $.ajax({
-//         type: "POST",
-//         url: "/delete_sales",
-//         data: JSON.stringify({ 'product_id': product_id }),
-//         dataType: "json",
-//         contentType: "application/json",
-//         success: function (response) {
-//             console.log(response);
-//             // Optionally, close the modal and show success alert
-//             $('#cancel_product').click(); // Close modal
-//             $('#product_delete_alert').show(); // Show alert
 
-//             setTimeout(() => {
-//                 location.reload(); // Reload the page after a short delay
-//             }, 1500);
-//         },
-//         error: function (xhr, status, error) {
-//             // Handle errors
-//             alert('Error deleting product: ' + error);
-//         }
-//     });
-// }
+
+function deleteAccount() {
+    const product_id = $('#account_id').val();
+    $.ajax({
+        type: "POST",
+        url: "/delete_account",
+        data: JSON.stringify({ 'product_id': product_id }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (response) {
+            console.log(response);
+            // Optionally, close the modal and show success alert
+            $('#cancel_account').click(); // Close modal
+            $('#account_delete_alert').show(); // Show alert
+
+            setTimeout(() => {
+                location.reload(); // Reload the page after a short delay
+            }, 1500);
+        },
+        error: function (xhr, status, error) {
+            // Handle errors
+            alert('Error deleting product: ' + error);
+        }
+    });
+}
 
 function addAccounts() {
     let isValid = true;

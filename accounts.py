@@ -54,6 +54,22 @@ class Accounts(Database):
 
         return accounts_dict
 
+    def read_account_by_id(self, account_id):
+        # Retrieve the account with the given ID
+        self.cursor.execute('SELECT * FROM Accounts WHERE id = ?;', (account_id,))
+        
+        # Fetch only one record
+        account = self.cursor.fetchone()  
+        
+        # Get column names from the cursor description
+        column_names = [desc[0] for desc in self.cursor.description]  
+
+        # Convert the account tuple to a dictionary if it exists
+        account_dict = dict(zip(column_names, account)) if account else None
+
+        return account_dict
+
+
 
     def update_account(self, account_id, fname=None, lname=None, address=None, contact=None, email=None, username=None, password=None, role=None, date_created=None):
         # Update the account based on given arguments
