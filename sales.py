@@ -28,6 +28,7 @@ class Sales(Database):
         if sales_reference:
             query = '''
             SELECT 
+                sale_id as id,
                 sales_reference,
                 subtotal,
                 total_amount,
@@ -42,6 +43,7 @@ class Sales(Database):
         else:
             query = '''
             SELECT 
+                sale_id as id,
                 sales_reference,
                 subtotal,
                 total_amount,
@@ -67,10 +69,23 @@ class Sales(Database):
         except Exception as e:
             print(f"An error occurred: {e}")
             return None  # Return None or handle as needed
+        
+    def delete_sales(self, sale_id):
+            """Delete a sales record by sale_id."""
+            query = '''
+            DELETE FROM Sales
+            WHERE sale_id = ?;
+            '''
+            
+            parameters = (sale_id,)
+            
+            try:
+                self.cursor.execute(query, parameters)
+                self.conn.commit()
+                print("Sales record deleted successfully!")
+            except Exception as e:
+                print(f"An error occurred while deleting the sales record: {e}")
+                self.conn.rollback()
 
-
-
-    def close_connection(self):
-        """Close the database connection when done."""
-        if self.conn:
-            self.conn.close()
+if __name__ == "__main__":
+    Sales().delete_sales(111)

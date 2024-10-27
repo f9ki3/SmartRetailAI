@@ -8,19 +8,19 @@
 <body>
     <div class="container">
         {% include 'admin-navigation.html' %}
-        <div id="stock_delete_alert" style="display: none;">
+        <div id="product_delete_alert" style="display: none;">
             <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>Deleted successfully!
             </div>
         </div>
-        <div id="stock_add_alert" style="display: none;">
+        <div id="sales_add_alert" style="display: none;">
             <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>Added stock successfully!
+                <i class="bi bi-check-circle-fill me-2"></i>Added sale successfully!
             </div>
         </div>
-        <div id="stock_edit_alert" style="display: none;">
+        <div id="sales_edit_alert" style="display: none;">
             <div style="position: fixed; bottom: 0; z-index: 100" class="alert alert-success" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>Updated stock successfully!
+                <i class="bi bi-check-circle-fill me-2"></i>Updated sale successfully!
             </div>
         </div>
         <div class="row">
@@ -30,16 +30,16 @@
             <div class="col-10">
                 <h3>Sales Transaction</h3>
                 <hr>
-                <!-- <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addStock">Stock Out</button> -->
+                <!-- <button class="btn btn-dark btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addSale">Sale Out</button> -->
                 <div>
-                    <table id="data-table-stocks" class="display" style="font-size: 12px;">
+                    <table id="data-table-sales" class="display" style="font-size: 12px;">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">Sale Transaction</th>
-                                <th style="width: 15%;">Sales Date</th>
-                                <th style="width: 30%;">Subtotal</th>
-                                <th style="width: 30%;">Total</th>
-                                <th style="width: 10%;" class="text-center">Action</th>
+                                <th style="width: 20%;">Sale Transaction</th>
+                                <th style="width: 20%;">Sales Date</th>
+                                <th style="width: 20%;">Subtotal</th>
+                                <th style="width: 20%;" class="text-center">Total</th>
+                                <th style="width: 20%;" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,11 +56,11 @@
 </html>
 
 <!-- Delete Product Modal -->
-<div class="modal fade" id="deleteStock" tabindex="-1" aria-labelledby="deleteProductLabel" aria-hidden="true">
+<div class="modal fade" id="deleteSale" tabindex="-1" aria-labelledby="deleteProductLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content p-5">
         <div class="modal-body d-flex justify-content-center flex-column align-items-center">
-          <input id="stock_id" type="hidden">
+          <input id="sale_id" type="hidden">
           <div style="background-color: rgb(252, 230, 230); border-radius: 100%; padding: 20px">
             <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
           </div>

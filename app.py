@@ -189,8 +189,14 @@ def read_stocks():
 @app.route('/delete_product', methods=['POST'])
 def delete_product():
     id = request.json.get('product_id')
-    print(id)
     Products().delete_product(id)
+    return jsonify(1)
+
+@app.route('/delete_sales', methods=['POST'])
+def delete_sales():
+    id = request.json.get('product_id')
+    print(id)
+    Sales().delete_sales(id)
     return jsonify(1)
 
 @app.route('/delete_stocks', methods=['POST'])

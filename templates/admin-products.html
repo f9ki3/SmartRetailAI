@@ -63,7 +63,7 @@
     <div class="modal-dialog">
       <div class="modal-content p-5">
         <div class="modal-body d-flex justify-content-center flex-column align-items-center">
-          <input id="product_id" type="hidden">
+          <input id="product_id" type="text">
           <div style="background-color: rgb(252, 230, 230); border-radius: 100%; padding: 20px">
             <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
           </div>
@@ -71,7 +71,7 @@
           <p class="text-center text-muted">This action cannot be undone. All product data will be lost.</p>
         </div>
         <div class="d-flex flex-column">
-          <button onclick="deleteProduct()" type="button" class="btn p-2 btn-sm btn-danger">Delete</button>
+          <button onclick="deleteProducts()" type="button" class="btn p-2 btn-sm btn-danger">Delete</button>
           <button id="cancel_product" type="button" class="btn p-2 mt-2 btn-sm btn-dark border" data-bs-dismiss="modal">Cancel</button>
         </div>
       </div>

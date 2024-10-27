@@ -60,8 +60,9 @@ $(document).ready(function() {
     });
 });
 
-function deleteProduct() {
+function deleteProducts() {
     const product_id = $('#product_id').val();
+    console.log('click')
     $.ajax({
         type: "POST",
         url: "/delete_product",
