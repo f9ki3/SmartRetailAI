@@ -131,9 +131,10 @@
             </div>
         </div>
         <script>
-            function cashier_print_receipt(reference_id){
-                console.log(reference_id)
-                $('#cashier_receipt').modal('show')
+            function cashier_print_receipt(reference_id) {
+                console.log(reference_id);
+                $('#cashier_receipt').modal('show');
+                
                 $.ajax({
                     url: '/get_receipt', // Replace with your server URL
                     type: 'POST', // or 'GET' depending on your needs
@@ -143,6 +144,9 @@
                     success: function(response) {
                         console.log('Full Response:', response); // Log the full response
                         
+                        // Clear the table body before appending new rows
+                        $('#receiptTable tbody').empty();
+            
                         // Check if response is an array
                         if (Array.isArray(response) && response.length > 0) {
                             var rows = '';
@@ -172,7 +176,7 @@
                             });
                 
                             // Append the new rows to the table
-                            $('#receiptTable tbody').append(rows); // Replace #receiptTable with your actual table ID
+                            $('#receiptTable tbody').append(rows);
                         } else {
                             $('#receiptTable tbody').append('<tr><td colspan="2" class="text-center">No items found.</td></tr>');
                         }
@@ -183,6 +187,7 @@
                     }
                 });
             }
+            
         </script>
     </div>
     
