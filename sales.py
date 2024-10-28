@@ -106,5 +106,74 @@ class Sales(Database):
                 print(f"An error occurred while deleting the sales record: {e}")
                 self.conn.rollback()
 
+    def sales_dashboard(self):
+        # Get today's date and the first day of the current month
+        today_date = datetime.now().date()
+        first_day_of_month = today_date.replace(day=1)
+
+        # Query for total sales today
+        query_today = '''
+        SELECT 
+            SUM(qty * price) AS today_sales
+        FROM Sales
+        WHERE DATE(sale_date) = ?;  -- Filter by today's date
+        '''
+
+        # Query for total sales this month
+        query_month = '''
+        SELECT 
+            SUM(qty * price) AS month_sales
+        FROM Sales
+        WHERE DATE(sale_date) >= ?;  -- Filter by the first day of the current month
+        '''
+
+        # Query to count cashiers
+        query_count_cashier = '''
+        SELECT 
+            COUNT(*) AS count_cashier
+        FROM Accounts
+        WHERE role = 'cashier'
+        '''
+
+        # Query to count admins
+        query_count_admin = '''
+        SELECT 
+            COUNT(*) AS count_admin
+        FROM Accounts
+        WHERE role = 'admin'
+        '''
+
+        try:
+            # Get total sales for today
+            self.cursor.execute(query_today, (today_date,))
+            row_today = self.cursor.fetchone()
+            total_sales_today = row_today[0] if row_today else 0  # Handle case where there are no sales today
+
+            # Get total sales for the current month
+            self.cursor.execute(query_month, (first_day_of_month,))
+            row_month = self.cursor.fetchone()
+            total_sales_month = row_month[0] if row_month else 0  # Handle case where there are no sales this month
+
+            # Get total count of cashiers
+            self.cursor.execute(query_count_cashier)
+            row_cashier = self.cursor.fetchone()
+            count_cashier = row_cashier[0] if row_cashier else 0  # Handle case where there are no cashiers
+
+            # Get total count of admins
+            self.cursor.execute(query_count_admin)
+            row_admin = self.cursor.fetchone()
+            count_admin = row_admin[0] if row_admin else 0  # Handle case where there are no admins
+
+            return {
+                'total_sales_today': total_sales_today,
+                'total_sales_month': total_sales_month,
+                'count_cashier': count_cashier,
+                'count_admin': count_admin
+            }  # Return total sales and counts in a dictionary
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None  # Return None or handle as needed
+
+
 if __name__ == "__main__":
     Sales().delete_sales(111)

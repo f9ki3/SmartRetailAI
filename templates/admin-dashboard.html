@@ -8,12 +8,60 @@
 <body>
     <div class="container">
         {% include 'admin-navigation.html' %}
-        <div class="row">
+        <div class="row g-4">
             <div class="col-2">
                 {% include 'admin-nav.html' %}
             </div>
-            <div class="col-8">
-                <h3>Dashboard</h3>
+            <div class="col-10">
+                <div class="row g-3">
+                    <div class="col-12 col-md-8">
+                        <div>
+                            <div class="d-flex flex-row">
+                                <div>
+                                    <h6 class="text-muted">Today Sales</h6>
+                                    <h3 id="today_sales">0</h3>
+                                </div>
+                                <div class="ps-5">
+                                    <h6 class="text-muted">Monthly Sales</h6>
+                                    <h3 id="month_sales">0</h3>
+                                </div>
+                            </div>
+                            <h6 class="text-muted">Today Sales</h6>
+                            <div id="dailySales"></div>
+                            <h6 class="text-muted">Monthly Sales</h6>
+                            <div id="monthlySales"></div>
+                            <h6 class="text-muted">Yearly Sales</h6>
+                            <div id="yearlySales"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div >
+                            <h6 class="text-muted" id="current-date">October 28, 2024</h6>
+                            <h3 class="fw-bold text-muted" id="current-time">12:00 PM</h3>
+
+                            <hr>
+                            <h6 class="text-muted">Administrators</h6>
+                            <h3 class="fw-bolder text-muted" id="admin_count">0</h3>
+                            <hr>
+                            <h6 class="text-muted">Customers</h6>
+                            <h3 class="fw-bolder text-muted" id="cashier_count">0</h3>
+                        </div>
+                        <div>
+                            <hr>
+                            <h6 class="text-muted">Top Products</h6>
+                            <div id="topProducts">
+
+                            </div>
+                        </div>
+                        <div>
+                            <hr>
+                            <h6 class="text-muted">Critical Stocks</h6>
+                            <div id="criticalStocks">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
