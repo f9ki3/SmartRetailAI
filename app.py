@@ -319,7 +319,7 @@ def update_account():
 
     Accounts().update_account(account_id, first_name, last_name, address, contact, email, username, password, role, date_created=None)
     # Assuming everything went well
-    return jsonify(1)
+    return jsonify({'success': True})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
