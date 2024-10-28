@@ -10,7 +10,7 @@ $(document).ready(function() {
             // Loop through the data and append rows to the table
             data.forEach(function(item) {
                 $('#data-table-products tbody').append(
-                    `<tr data-bs-toggle="modal" data-bs-target="#viewProduct" class="tr-products" data-id="${item.id}" style="cursor: pointer">
+                    `<tr  class="tr-products" data-id="${item.id}" style="cursor: pointer">
                         <td class="pt-3 pb-3 text-center">${item.id}</td>
                         <td class="pt-3 pb-3 text-center">
                             <img src="${item.product_image}" alt="Product Image" style="width: 70px; height: 70px;"> <!-- Display product image -->
