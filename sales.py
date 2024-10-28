@@ -127,12 +127,38 @@ class Sales(Database):
         WHERE DATE(sale_date) >= ?;  -- Filter by the first day of the current month
         '''
 
+        # Query for monthly sales grouped by month
+        monthly_sales_kita = '''
+        SELECT 
+            strftime('%Y-%m', sale_date) AS sale_month,
+            SUM(qty * price) AS monthly_sales_amount
+        FROM 
+            Sales
+        GROUP BY 
+            sale_month
+        ORDER BY 
+            sale_month;  -- Optionally order by month
+        '''
+
+        # Query for yearly sales grouped by year (modified to get all years)
+        yearly_sales_kita = '''
+        SELECT 
+            strftime('%Y', sale_date) AS sale_year,
+            SUM(qty * price) AS yearly_sales_amount
+        FROM 
+            Sales
+        GROUP BY 
+            sale_year
+        ORDER BY 
+            sale_year;  -- Optionally order by year
+        '''
+
         # Query to count cashiers
         query_count_cashier = '''
         SELECT 
             COUNT(*) AS count_cashier
         FROM Accounts
-        WHERE role = 'cashier'
+        WHERE role = 'cashier';
         '''
 
         # Query to count admins
@@ -140,9 +166,43 @@ class Sales(Database):
         SELECT 
             COUNT(*) AS count_admin
         FROM Accounts
-        WHERE role = 'admin'
+        WHERE role = 'admin';
         '''
 
+        # Query for top 5 products sold
+        query_top_products = '''
+        SELECT 
+            item_name,
+            SUM(qty) AS total_qty
+        FROM Sales
+        GROUP BY sales_reference
+        ORDER BY total_qty DESC
+        LIMIT 5;
+        '''
+
+        # Query for critical stocks
+        query_critical_stocks = '''
+        SELECT 
+            name,
+            stock
+        FROM Products
+        ORDER BY stock ASC
+        LIMIT 5;
+        '''
+        
+        # Daily sales query
+        daily_sales_kita = '''
+        SELECT 
+            sale_date,
+            SUM(qty * price) AS daily_sales_amount
+        FROM 
+            Sales
+        GROUP BY 
+            sale_date
+        ORDER BY 
+            sale_date;  -- Optionally order by date
+        '''
+        
         try:
             # Get total sales for today
             self.cursor.execute(query_today, (today_date,))
@@ -154,6 +214,16 @@ class Sales(Database):
             row_month = self.cursor.fetchone()
             total_sales_month = row_month[0] if row_month else 0  # Handle case where there are no sales this month
 
+            # Get monthly sales data
+            self.cursor.execute(monthly_sales_kita)
+            monthly_sales_data = self.cursor.fetchall()  # Fetch all monthly sales
+            monthly_sales_list = [(row[0], row[1]) for row in monthly_sales_data]  # Create a list of (sale_month, monthly_sales_amount)
+
+            # Get yearly sales data (modified to include all years)
+            self.cursor.execute(yearly_sales_kita)
+            yearly_sales_data = self.cursor.fetchall()  # Fetch all yearly sales
+            yearly_sales_list = [(row[0], row[1]) for row in yearly_sales_data]  # Create a list of (sale_year, yearly_sales_amount)
+
             # Get total count of cashiers
             self.cursor.execute(query_count_cashier)
             row_cashier = self.cursor.fetchone()
@@ -164,15 +234,37 @@ class Sales(Database):
             row_admin = self.cursor.fetchone()
             count_admin = row_admin[0] if row_admin else 0  # Handle case where there are no admins
 
+            # Get top 5 products sold
+            self.cursor.execute(query_top_products)
+            top_products = self.cursor.fetchall()  # Fetch all top products
+            top_products_list = [(row[0], row[1]) for row in top_products]  # Create a list of (sales_reference, total_qty)
+
+            # Get critical stocks
+            self.cursor.execute(query_critical_stocks)
+            critical_stocks = self.cursor.fetchall()  # Fetch all critical stocks
+            critical_stocks_list = [(row[0], row[1]) for row in critical_stocks]  # Create a list of (name, stocks)
+
+            # Get daily sales data
+            self.cursor.execute(daily_sales_kita)
+            daily_sales_data = self.cursor.fetchall()  # Fetch all daily sales
+            daily_sales_list = [(row[0], row[1]) for row in daily_sales_data]  # Create a list of (sale_date, daily_sales_amount)
+
             return {
                 'total_sales_today': total_sales_today,
                 'total_sales_month': total_sales_month,
+                'monthly_sales': monthly_sales_list,  # Include monthly sales data
+                'yearly_sales': yearly_sales_list,  # Include yearly sales data
                 'count_cashier': count_cashier,
-                'count_admin': count_admin
+                'count_admin': count_admin,
+                'top_products': top_products_list,  # Add top products to the return value
+                'critical_stocks': critical_stocks_list,  # Add critical stocks to the return value
+                'daily_sales': daily_sales_list  # Include daily sales data in the return value
             }  # Return total sales and counts in a dictionary
         except Exception as e:
             print(f"An error occurred: {e}")
             return None  # Return None or handle as needed
+
+
 
 
 if __name__ == "__main__":

@@ -109,6 +109,11 @@ def get_dashboard_count():
     data = Sales().sales_dashboard()
     return jsonify(data)
 
+# @app.route('/get_statistic_dashboard', methods=['GET'])
+# def get_dashboard_count():
+#     data = Sales().get_statistics_dashboard()
+#     return jsonify(data)
+
 @app.route('/get_accounts', methods=['GET'])
 def get_accounts():
     data = Accounts().read_accounts()
