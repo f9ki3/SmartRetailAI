@@ -81,13 +81,23 @@ $.ajax({
         var optionsYearlySales = {
             series: [{ name: 'Yearly Sales', data: year_amounts }],
             chart: { height: 300, type: 'bar' },
-            colors: ['#4CAF50'], // Green for yearly sales
+            colors: ['#FF5733', '#FFBD33', '#33FF57', '#33FFBD', '#337BFF', '#9C27B0', '#00BCD4'], // Different colors for each year
             dataLabels: { enabled: false },
-            xaxis: { categories: year_data },
+            xaxis: {
+                categories: year_data,
+                labels: { show: false } // Hide x-axis labels
+            },
+            plotOptions: {
+                bar: {
+                    distributed: true // Ensures each bar uses a different color from the colors array
+                }
+            },
             tooltip: { x: { format: 'yyyy' } }
         };
         var yearlySalesChart = new ApexCharts(document.querySelector("#yearlySales"), optionsYearlySales);
         yearlySalesChart.render();
+
+
 
         const monthlySales = response.monthly_sales;
         const monthly_month = monthlySales.map(sale => sale[0]);
