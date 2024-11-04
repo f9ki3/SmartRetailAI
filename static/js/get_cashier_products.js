@@ -475,7 +475,8 @@ function logPaymentDetails() {
         vat: vat,
         total: total,
         payment: payment.toFixed(2), // Keeping this as float and formatted
-        change: change
+        change: change,
+        type: selectedPaymentMethod
     };
 
     console.log(paymentData);

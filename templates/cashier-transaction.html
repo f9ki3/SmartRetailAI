@@ -37,7 +37,8 @@
                                     <th style="width: 20%;">Sales Date</th>
                                     <th style="width: 20%;">Subtotal</th>
                                     <th style="width: 20%;" class="text-center">Total</th>
-                                    <th style="width: 20%;" class="text-center">Action</th>
+                                    <th style="width: 10%;" class="text-center">Type</th>
+                                    <th style="width: 10%;" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -84,6 +85,7 @@
                             <p class="m-0 p-0">offset@gmail.com</p>
                             <p class="m-0 p-0">09567612761</p>
                             <p id="receipt_sales_date" class="m-0 p-0"></p>
+                            <p id="receipt_type" class="m-0 p-0"></p>
                         </div>
                         <div class="w-100 mt-3">
                             <table style="font-size: 12px; width: 100%;" id="receiptTable">
@@ -165,6 +167,7 @@
                             $('#receipt_payment').text('₱' + parseFloat(firstItem.payment).toLocaleString());
                             $('#receipt_change').text('₱' + parseFloat(firstItem.change).toLocaleString());
                             $('#receipt_sales_date, #receipt_sales_dates').text(firstItem.sale_date); // Adjust format as needed
+                            $('#receipt_type').text(firstItem.type); // Adjust format as needed
                             $('#receipt_vat').text('₱' + vat.toLocaleString()); // Populate VAT
                 
                             // Loop through the response to create table rows
@@ -199,7 +202,8 @@
                     <p class="text-center m-0 p-0" style="font-size: 12px;">6B Marcelo Building Caruncho Avenue, San Nicolas Pasig City</p>
                     <p class="text-center m-0 p-0" style="font-size: 12px;">offset@gmail.com</p>
                     <p class="text-center m-0 p-0" style="font-size: 12px;">09567612761</p>
-                    <p id="receipt_sales_dates" class="m-0 p-0" style="font-size: 12px;"></p>
+                    <p id="receipt_sales_dates" class="text-center m-0 p-0" style="font-size: 12px;"></p>
+                    <p id="receipt_type" class="text-center m-0 p-0" style="font-size: 12px;"></p>
                 </div>
                 <div class="w-100 mt-3">
                     <table style="font-size: 12px; width: 100%;" id="receiptTable">

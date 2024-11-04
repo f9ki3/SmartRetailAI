@@ -15,6 +15,7 @@ $(document).ready(function() {
                         <td class="pt-3 pb-3">${item.sale_date}</td>
                         <td class="pt-3 pb-3">${item.subtotal}</td>
                         <td class="pt-3 pb-3 text-center">${item.total_amount}</td> 
+                        <td class="pt-3 pb-3 text-center">${item.type}</td> 
                         <td class="pt-3 pb-3 text-center">
                             <button class="btn-delete-sale" style="background-color: transparent; border: none;" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#deleteSale">
                                 <i class="bi bi-trash3 text-danger"></i>

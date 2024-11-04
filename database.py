@@ -69,6 +69,7 @@ class Tables(Database):  # Inherit from Database
                 payment REAL NOT NULL,
                 change TEXT NOT NULL,
                 sale_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                type TEXT,
                 FOREIGN KEY (item_id) REFERENCES CartItems(id)  -- assuming you have a CartItems table
             );
 

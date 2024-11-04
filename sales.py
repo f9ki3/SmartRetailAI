@@ -2,16 +2,16 @@ from database import Database
 from datetime import datetime
 
 class Sales(Database):
-    def create_sale(self, sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change):
+    def create_sale(self, sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change, sale_type):
         query = '''
-        INSERT INTO Sales (sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change, sale_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO Sales (sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change, sale_date, type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         '''
         
         # Use the current datetime directly for sale_date
         sale_date = datetime.now()
         
-        parameters = (sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change, sale_date)
+        parameters = (sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total_amount, payment, change, sale_date, sale_type)
         
         try:
             # Ensure the database connection is open
@@ -34,6 +34,7 @@ class Sales(Database):
                 total_amount,
                 change,
                 sale_date,
+                type,
                 subtotal * 0.12 AS vat  -- Calculate 12% of subtotal as VAT
             FROM Sales
             WHERE sales_reference = ?
@@ -49,6 +50,7 @@ class Sales(Database):
                 total_amount,
                 change,
                 sale_date,
+                type,
                 subtotal * 0.12 AS vat  -- Calculate 12% of subtotal as VAT
             FROM Sales
             GROUP BY sales_reference;

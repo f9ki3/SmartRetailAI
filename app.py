@@ -248,7 +248,7 @@ def create_sale():
     # Get the JSON data from the request
     data = request.get_json()
 
-    # Log the payment details (you can store this in a database or file)
+    # Extract the data from the request
     sales_reference = data.get('reference_id')
     cart = data.get('cart')
     subtotal = data.get('subtotal')
@@ -256,6 +256,7 @@ def create_sale():
     total = data.get('total')
     payment = data.get('payment')
     change = data.get('change')
+    sale_type = data.get('type')  # Avoid using 'type' as it is a built-in function
 
     # Process each item in the cart
     for item in cart:
@@ -267,12 +268,13 @@ def create_sale():
         size = item.get('size')
         stock = item.get('stock')
 
-        # Here you should call a separate function to handle the actual sale processing
-        Sales().create_sale(sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total, payment, change)
+        # Call the create_sale and outStocks methods
+        Sales().create_sale(sales_reference, item_id, item_name, price, product_image, qty, size, stock, subtotal, total, payment, change, sale_type)
         Stocks().outStocks(item_id, qty, 'stock out')
 
     # Return a success response
     return jsonify({"message": "Payment logged successfully", "sales_reference": sales_reference}), 200
+
 
 @app.route('/get_receipt', methods=['POST'])
 def get_receipt():
