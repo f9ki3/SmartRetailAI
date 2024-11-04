@@ -31,26 +31,16 @@ $(document).ready(function() {
             success: function(data) {
                 // Clear the existing products
                 $('#product-grid').empty();
-
-                // Array to hold matched products
-                const matchedProducts = [];
-
-                // Loop through the data and append product cards
-                data.forEach(function(item) {
-                    // If categoryId is null, show all products, otherwise filter by category
+    
+                const matchedProducts = data.filter(item => {
                     const matchesCategory = !categoryId || item.category_id === categoryId;
                     const matchesSearchQuery = !searchQuery || 
                         item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                         item.barcode_id.toLowerCase().includes(searchQuery.toLowerCase());
-
-                    if (matchesCategory && matchesSearchQuery) {
-                        matchedProducts.push(item);
-                    }
+                    return matchesCategory && matchesSearchQuery;
                 });
-
-                // Check if there are matched products
+    
                 if (matchedProducts.length > 0) {
-                    // Display matched products
                     matchedProducts.forEach(function(item) {
                         $('#product-grid').append(
                             `<div class="col-6 col-md-4">
@@ -69,10 +59,8 @@ $(document).ready(function() {
                                 </div>
                             </div>`
                         );
-                        
                     });
                 } else {
-                    // Show no results image or message
                     $('#product-grid').append(
                         `<div class="text-center" style="margin: 20px;">
                             <img src="../static/img/lost.svg" alt="No results found" style="max-width: 50%; opacity: 75%; height: auto; margin-top: 100px">
@@ -80,8 +68,11 @@ $(document).ready(function() {
                         </div>`
                     );
                 }
-
-                // Add click event listener to the "Add to Cart" buttons
+    
+                // Detach any existing click event listeners to prevent multiple bindings
+                $('#product-grid').off('click', '.add-to-cart');
+    
+                // Add a new click event listener to "Add to Cart" buttons
                 $('#product-grid').on('click', '.add-to-cart', function() {
                     const productId = $(this).data('id');
                     const productImage = $(this).data('image');
@@ -89,54 +80,47 @@ $(document).ready(function() {
                     const productSize = $(this).data('size');
                     const productMax = $(this).data('stock');
                     const productPrice = parseFloat($(this).data('price'));
-                    const productStock = parseInt($(this).closest('.p-3').find('p.mb-0').text().split(': ')[1]) || 0; // Get the stock value
-
-                    // Check stock availability
-                    if (productStock <= 0) {
-                        alert('Sorry, this item is out of stock.');
-                        return; // Exit if there's no stock
-                    }
-
-                    // Create the cart item object
-                    const cartItem = {
-                        id: productId,
-                        product_image: productImage,
-                        name: productName,
-                        size: productSize,
-                        stock: productMax,
-                        qty: 1, // Default quantity
-                        price: productPrice,
-                        subtotal: productPrice // Subtotal is equal to price for 1 item
-                    };
-
-                    // Get existing cart items from local storage
+    
                     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-                    // Check if the item already exists in the cart
+    
+                    // Check if the item is already in the cart
                     const existingItemIndex = cart.findIndex(item => item.id === productId);
                     if (existingItemIndex > -1) {
-                        // Item exists, update quantity and subtotal
-                        cart[existingItemIndex].qty += 1; // Increment quantity
-                        cart[existingItemIndex].subtotal += productPrice; // Update subtotal
+                        // Update quantity and subtotal
+                        if (cart[existingItemIndex].qty < productMax) {
+                            cart[existingItemIndex].qty += 1;
+                            cart[existingItemIndex].subtotal = cart[existingItemIndex].qty * productPrice;
+                        } else {
+                            alert('Stock limit reached for this item.');
+                            return;
+                        }
                     } else {
-                        // Item does not exist, add new item to the cart
+                        // Add new item if it doesn't exist in the cart
+                        const cartItem = {
+                            id: productId,
+                            product_image: productImage,
+                            name: productName,
+                            size: productSize,
+                            stock: productMax,
+                            qty: 1,
+                            price: productPrice,
+                            subtotal: productPrice
+                        };
                         cart.push(cartItem);
                     }
-
+    
                     // Save updated cart to local storage
                     localStorage.setItem('cart', JSON.stringify(cart));
-
-                    // Optional: Provide user feedback (e.g., alert, notification)
-                    alert(`${productName} has been added to your cart.`);
+                    
                     populateCart();
                 });
-
             },
             error: function(xhr, status, error) {
                 alert('Error fetching products: ' + error);
             }
         });
     }
+    
 
     // Add click event listener for the "All" button
     $('#all_category').on('click', function() {
