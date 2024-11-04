@@ -101,6 +101,30 @@ class Products(Database):
 
         return product_list  # Return the list of product dictionaries
 
+    def get_product_by_barcode(self, barcode):
+        # Retrieve the product with its category name using a parameterized query
+        self.cursor.execute(f'''
+            SELECT p.*, c.name AS category_name
+            FROM Products p
+            JOIN Category c ON p.category_id = c.id
+            WHERE p.barcode_id = {barcode};
+        ''')
+        
+        # Fetch the product
+        product = self.cursor.fetchone()
+        
+        # If no product is found, return None
+        if not product:
+            return None
+        
+        # Get column names
+        column_names = [column[0] for column in self.cursor.description]
+        
+        # Create a dictionary for the product
+        product_dict = dict(zip(column_names, product))  # Zip column names with product values
+        
+        return product_dict  # Return the product dictionary
+
 
     def update_product(self, product_id, name=None, category_id=None, price=None, stock=None, size=None, product_image=None):
         # Update the product based on given arguments

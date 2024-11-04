@@ -200,6 +200,34 @@ def read_products():
     data = Products().read_products()
     return jsonify(data)
 
+@app.route('/get_product_by_barcode', methods=['GET'])
+def get_product_by_barcode():
+    # Get the barcode from the query parameters
+    barcode = request.args.get('barcode')
+    print(barcode)
+    if not barcode:
+        return jsonify({'error': 'Barcode is required'}), 400  # Return an error if no barcode is provided
+
+    try:
+        # Retrieve the product using the Products class
+        product_data = Products().get_product_by_barcode(barcode)
+
+        # Check if any product was found
+        if not product_data:
+            return jsonify({'message': 'Product not found'}), 404  # Return a not found message if no product matches
+
+        # For debugging purposes
+        print(product_data)
+
+        # Return the product data as JSON
+        return jsonify({'product': product_data})
+    
+    except Exception as e:
+        # Log the error and return a 500 error response
+        print(f"Error retrieving product: {e}")
+        return jsonify({'error': 'An error occurred while retrieving the product'}), 500
+
+
 @app.route('/read_stocks', methods=['GET'])
 def read_stocks():
     data = Stocks().readStocks()

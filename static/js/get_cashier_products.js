@@ -137,6 +137,88 @@ $(document).ready(function() {
 
     // Initially fetch all products (without any category filtering)
     fetchProducts(null); // Passing null to fetch and display all products initially
+    
+    // Add this new function to handle barcode scanning
+    $('#barcodeID').on('keypress', function(event) {
+        if (event.which === 13) { // Check if the Enter key is pressed
+            const barcode = $(this).val().trim(); // Get the barcode value
+            if (barcode) {
+                // Call a function to handle adding the item to the cart
+                addToCartFromBarcode(barcode);
+                $(this).val(''); // Clear the input after adding
+            } else {
+                alert('Please enter a valid barcode.');
+            }
+        }
+    });
+
+    // Function to add item to cart based on barcode
+    function addToCartFromBarcode(barcode) {
+        $.ajax({
+            url: '/get_product_by_barcode', // Endpoint to fetch product by barcode
+            method: 'GET',
+            data: { barcode: barcode },
+            success: function(product) {
+                if (product) {
+                    if (product.product.stock > 0) { // Check if the product stock is greater than 0
+                        addProductToCart(product.product); // Add product if stock is available
+                    } else {
+                        alert('This product is out of stock and cannot be added to the cart.');
+                    }
+                } else {
+                    alert('Product not found for the entered barcode.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Incorrect ID');
+            }
+        });
+    }
+    
+    
+
+    // Function to add the product to the cart
+    function addProductToCart(product) {
+        const productId = product.id;
+        const productImage = product.product_image;
+        const productName = product.name;
+        const productSize = product.size;
+        const productMax = product.stock;
+        const productPrice = parseFloat(product.price);
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Check if the item is already in the cart
+        const existingItemIndex = cart.findIndex(item => item.id === productId);
+        if (existingItemIndex > -1) {
+            // Update quantity and subtotal
+            if (cart[existingItemIndex].qty < productMax) {
+                cart[existingItemIndex].qty += 1;
+                cart[existingItemIndex].subtotal = cart[existingItemIndex].qty * productPrice;
+            } else {
+                alert('Stock limit reached for this item.');
+                return;
+            }
+        } else {
+            // Add new item if it doesn't exist in the cart
+            const cartItem = {
+                id: productId,
+                product_image: productImage,
+                name: productName,
+                size: productSize,
+                stock: productMax,
+                qty: 1,
+                price: productPrice,
+                subtotal: productPrice
+            };
+            cart.push(cartItem);
+        }
+
+        // Save updated cart to local storage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        populateCart(); // Update the cart display
+    }
 });
 
 // Function to populate the cart items from local storage
