@@ -27,6 +27,13 @@ def logout():
     session.clear()
     return redirect('/')  # Return the redirect to the home page
 
+@app.route('/admin-ai-chat')
+def admin_ai():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('admin-ai-bot.html') # Use parentheses and return the redirect
+    else: 
+        return render_template('/')
+
 @app.route('/admin-dashboard')
 def admin_dashboard():
     if 'user_type' in session and session['user_type'] == 'admin':
