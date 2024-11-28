@@ -13,19 +13,61 @@
                 {% include 'admin-nav.html' %}
             </div>
             <div class="col-10">
-                <div class="d-flex flex-row">
-                    <img src="https://i.pinimg.com/originals/50/38/f6/5038f6672f089f3a50c4f075feddfc42.gif" alt="">
-                    <div class="bg-light p-5" style=" border-radius: 30px 30px 30px 30px;">
-                        <h3 class="mt-5">Hello I'm Smart Retail AI</h3>
-                        <p>Tell about your concern or inquires. </p>
-                        <p>You can tell me about the sales, inventory, products inquires.</p>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex flex-row bg-light p-5" style="height: 500px; border-radius: 30px 30px 30px 30px;">
+                            <div>
+                                <img src="../static/img/robot.gif" alt="">
+                            </div>
+                            <div class="position-relative">
+                                <div>
+                                    <div id="default" class="">
+                                        <h3 class="mt-5">Hello I'm Smart Retail AI</h3>
+                                        <p class="p-0 m-0">You can tell me about the point of sales, inventory, products, inquires, etc.</p>
+                                        <p class="p-0 m-0">Tell me about your concern or inquires. </p>
+                                        <p class="p-0 mt-5 text-muted" style="font-size: 12px;">Try this prompt:</p>
+                                        <div>
+                                            <button onclick="message_ai('Sales Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Sales Report</button>
+                                            <button onclick="message_ai('Inventory Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Inventory Report</button>
+                                            <button onclick="message_ai('Top product Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Top product Report</button>
+                                            <button onclick="message_ai('Daily Sales')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Daily Sales</button>
+                                            <button onclick="message_ai('Monthly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Monthly</button>
+                                            <button onclick="message_ai('Yearly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Yearly</button>
+                                            <button onclick="message_ai('Most Bought Product')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Most Bought Product</button>
+                                            <button onclick="message_ai('Least Bought Product')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Least Bought Product</button>
+                                        </div>
+                                    </div>
+                                    <div id="loading_bot" class="d-none" style="width: 100%;">
+                                        <h3>Thinking:</h3>
+                                        <div class="loader" style="margin-top: 150px; margin-left: 150px">
+                                            <div class="line l1"></div>
+                                            <div class="line l2"></div>
+                                            <div class="line l3"></div>
+                                            <div class="line l4"></div>
+                                            <div class="line l5"></div>
+                                        </div>
+                                    </div>
+                                    <div id="ai_response" class="d-none" style="width: 100%;">
+                                        <h3>Smart Retail AI:</h3>
+                                        <p id="ai_message"></p>
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: -10; width: 500px">
+                                    <div class="pt-4 d-flex">
+                                        <div class="btn-group w-100" role="group">
+                                            <input id="message" type="text" class="rounded-start-3 form-control rounded-0" placeholder="Enter your message here...">
+                                            <button onclick="message_ai($('#message').val())" class="btn btn-dark rounded-end-3 rounded-0">Send</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
     </div>
-    
     
     {% include 'footer_links.html' %}
 </body>
