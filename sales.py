@@ -177,8 +177,19 @@ class Sales(Database):
             item_name,
             SUM(qty) AS total_qty
         FROM Sales
-        GROUP BY sales_reference
+        GROUP BY item_name
         ORDER BY total_qty DESC
+        LIMIT 5;
+        '''
+
+        # Query for bottom 5 products sold (low sales)
+        query_low_products = '''
+        SELECT 
+            item_name,
+            SUM(qty) AS total_qty
+        FROM Sales
+        GROUP BY item_name
+        ORDER BY total_qty ASC
         LIMIT 5;
         '''
 
@@ -239,7 +250,12 @@ class Sales(Database):
             # Get top 5 products sold
             self.cursor.execute(query_top_products)
             top_products = self.cursor.fetchall()  # Fetch all top products
-            top_products_list = [(row[0], row[1]) for row in top_products]  # Create a list of (sales_reference, total_qty)
+            top_products_list = [(row[0], row[1]) for row in top_products]  # Create a list of (item_name, total_qty)
+
+            # Get low-selling 5 products (low sales)
+            self.cursor.execute(query_low_products)
+            low_products = self.cursor.fetchall()  # Fetch all low products
+            low_products_list = [(row[0], row[1]) for row in low_products]  # Create a list of (item_name, total_qty)
 
             # Get critical stocks
             self.cursor.execute(query_critical_stocks)
@@ -259,12 +275,14 @@ class Sales(Database):
                 'count_cashier': count_cashier,
                 'count_admin': count_admin,
                 'top_products': top_products_list,  # Add top products to the return value
+                'low_products': low_products_list,  # Add low-selling products to the return value
                 'critical_stocks': critical_stocks_list,  # Add critical stocks to the return value
                 'daily_sales': daily_sales_list  # Include daily sales data in the return value
             }  # Return total sales and counts in a dictionary
         except Exception as e:
             print(f"An error occurred: {e}")
             return None  # Return None or handle as needed
+
 
 
 

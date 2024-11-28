@@ -65,16 +65,6 @@ function getResponse(input) {
                     <li>Pending Orders: 15</li>
                 </ul>
             </div>`;
-    } else if (lowerInput.includes('top product report')) {
-        return `
-            <div>
-                <p>The top product report is as follows:</p>
-                <ul>
-                    <li>Top Product: SuperWidget</li>
-                    <li>Units Sold: 1,000</li>
-                    <li>Revenue: 25,000</li>
-                </ul>
-            </div>`;
     } else if (lowerInput.includes('daily sales')) {
         // Add placeholder for daily sales and charts
         const chatDailyHTML = `
@@ -247,71 +237,149 @@ function getResponse(input) {
         // Return the placeholder for immediate display
         return chatYearlyHTML;
     } else if (lowerInput.includes('most bought product')) {
+        // Add a placeholder for the Most Bought Product chart
+        const chatTopHTML = `
+            <div id="chat_top">Fetching Most Bought Product...</div>
+            <div id="topProductDetails" style="font-size: 12px"></div> <!-- Placeholder for detailed product sales information -->
+            <div id="topProducts"></div> <!-- Placeholder for top products chart -->
+        `;
+        
+        // Perform the AJAX request to fetch data
         $.ajax({
-            url: '/get_dashboard_count',
+            url: '/get_dashboard_count', // API endpoint for fetching top products
             method: 'GET',
-            dataType: 'json',
+            dataType: 'json', // Expecting a JSON response
             success: function(response) {
-                const todaySales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_today);
-                const monthSales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_month);
-        
-                $('#today_sales').text(todaySales);
-                $('#month_sales').text(monthSales);
-                $('#admin_count').text(response.count_admin);
-                $('#cashier_count').text(response.count_cashier);
-        
-                const topProducts = response.top_products;
-                const seriesData = topProducts.map(product => product[1]);
-                const labelsData = topProducts.map(product => product[0]);
-        
-                // Donut chart for top products
-                var optionsDonut = {
-                    series: seriesData,
-                    chart: { type: 'donut' },
-                    labels: labelsData,
-                    colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'], // Brighter colors
-                    legend: { show: false },
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
-                            chart: { width: 200 },
-                            legend: { show: false }
-                        }
-                    }]
-                };
-                var donutChart = new ApexCharts(document.querySelector("#topProducts"), optionsDonut);
-                donutChart.render();
-        
-                // Render Top Products HTML
-                let topProductsHTML = '<ul>';
-                topProducts.forEach(product => {
-                    topProductsHTML += `<li>${product[0]}: ${product[1]}</li>`;
-                });
-                topProductsHTML += '</ul>';
-        
-                // Display the top products and analysis
-                const analysisText = `
-                    <p><strong>Analysis:</strong> These are the most popular products in terms of units sold. The success of these items could be attributed to factors such as competitive pricing, high customer demand, and effective promotions. To further boost sales, we could consider offering bundle deals or increase marketing efforts for these products to reach even more customers.</p>
-                `;
-        
-                // Insert the top products and analysis into the HTML element
-                $('#most_bought').html(topProductsHTML + analysisText);
+                // Check if top_products exists in the response
+                if (response && response.top_products) {
+                    // Get the top products and map them to series and labels for the chart
+                    const topProducts = response.top_products;
+                    const seriesData = topProducts.map(product => product[1]); // Quantities sold
+                    const labelsData = topProducts.map(product => product[0]); // Product names
+    
+                    // Donut chart options for visualizing top products
+                    var optionsDonut = {
+                        series: seriesData, // Product quantities
+                        chart: { 
+                            type: 'donut', // Chart type
+                            width: '100%',
+                            height: '250px' // Ensures it fits well in the container
+                        },
+                        labels: labelsData, // Product names as labels
+                        colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'], // Brighter colors for the segments
+                        legend: { show: false }, // Hide the legend
+                        responsive: [{
+                            breakpoint: 480, // Adjust chart layout for smaller screens
+                            options: {
+                                chart: { width: 200 }, // Smaller chart on small screens
+                                legend: { show: false } // Hide legend on small screens
+                            }
+                        }]
+                    };
+    
+                    // Initialize and render the donut chart
+                    var topChart = new ApexCharts(document.querySelector("#topProducts"), optionsDonut);
+                    topChart.render();
+    
+                    // Update the placeholder message with data after chart is rendered
+                    $('#chat_top').html('Here are the 5 top bought products:');
+    
+                    // Display textual details about the top products
+                    let productDetailsHTML = '<ul>';
+                    topProducts.forEach((product, index) => {
+                        productDetailsHTML += `
+                            <li>Top ${index + 1}: ${product[0]} with ${product[1]} sales</li>
+                        `;
+                    });
+                    productDetailsHTML += '</ul>';
+                    $('#topProductDetails').html(productDetailsHTML);
+                } else {
+                    console.error('No top products data found in the response.');
+                    $('#chat_top').html('Failed to fetch the top bought products.');
+                    $('#topProductDetails').html('No product details available.');
+                }
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching top products:', error);
-                $('#most_bought').html('<div>Error fetching top products data.</div>');
+                $('#chat_top').text('Error fetching data.');
+                $('#topProductDetails').text('Error fetching product details.');
             }
         });
+        
+        // Return the placeholder for immediate display
+        return chatTopHTML;
     }else if (lowerInput.includes('least bought product')) {
-        return `
-            <div>
-                <p>The least bought product is:</p>
-                <ul>
-                    <li>Product: BasicWidget</li>
-                    <li>Units Sold: 50</li>
-                    <li>Revenue: 500</li>
-                </ul>
-            </div>`;
+        // Add a placeholder for the Least Bought Product chart
+        const chatLeastHTML = `
+            <div id="chat_least">Fetching Least Bought Product...</div>
+            <div id="leastProductDetails" style="font-size: 12px"></div> <!-- Placeholder for detailed product sales information -->
+            <div id="leastProducts"></div> <!-- Placeholder for least bought products chart -->
+        `;
+        
+        // Perform the AJAX request to fetch data
+        $.ajax({
+            url: '/get_dashboard_count', // API endpoint for fetching least bought products
+            method: 'GET',
+            dataType: 'json', // Expecting a JSON response
+            success: function(response) {
+                // Check if least_bought_products exists in the response
+                if (response && response.low_products) {
+                    // Get the least bought products and map them to series and labels for the chart
+                    const leastBoughtProducts = response.low_products;
+                    const seriesData = leastBoughtProducts.map(product => product[1]); // Quantities sold
+                    const labelsData = leastBoughtProducts.map(product => product[0]); // Product names
+    
+                    // Donut chart options for visualizing least bought products
+                    var optionsDonut = {
+                        series: seriesData, // Product quantities
+                        chart: { 
+                            type: 'donut', // Chart type
+                            width: '100%',
+                            height: '250px' // Ensures it fits well in the container
+                        },
+                        labels: labelsData, // Product names as labels
+                        colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'], // Brighter colors for the segments
+                        legend: { show: false }, // Hide the legend
+                        responsive: [{
+                            breakpoint: 480, // Adjust chart layout for smaller screens
+                            options: {
+                                chart: { width: 200 }, // Smaller chart on small screens
+                                legend: { show: false } // Hide legend on small screens
+                            }
+                        }]
+                    };
+    
+                    // Initialize and render the donut chart
+                    var leastChart = new ApexCharts(document.querySelector("#leastProducts"), optionsDonut);
+                    leastChart.render();
+    
+                    // Update the placeholder message with data after chart is rendered
+                    $('#chat_least').html('Here are the 5 least bought products:');
+    
+                    // Display textual details about the least bought products
+                    let productDetailsHTML = '<ul>';
+                    leastBoughtProducts.forEach((product, index) => {
+                        productDetailsHTML += `
+                            <li>Least ${index + 1}: ${product[0]} with ${product[1]} sales</li>
+                        `;
+                    });
+                    productDetailsHTML += '</ul>';
+                    $('#leastProductDetails').html(productDetailsHTML);
+                } else {
+                    console.error('No least bought products data found in the response.');
+                    $('#chat_least').html('Failed to fetch the least bought products.');
+                    $('#leastProductDetails').html('No product details available.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching least bought products:', error);
+                $('#chat_least').text('Error fetching data.');
+                $('#leastProductDetails').text('Error fetching product details.');
+            }
+        });
+        
+        // Return the placeholder for immediate display
+        return chatLeastHTML;
     } else if (lowerInput.includes('hello')) {
         return `
             <div>
@@ -320,7 +388,6 @@ function getResponse(input) {
                 <div>
                     <button onclick="message_ai('Sales Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Sales Report</button>
                     <button onclick="message_ai('Inventory Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Inventory Report</button>
-                    <button onclick="message_ai('Top product Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Top product Report</button>
                     <button onclick="message_ai('Daily Sales')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Daily Sales</button>
                     <button onclick="message_ai('Monthly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Monthly</button>
                     <button onclick="message_ai('Yearly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Yearly</button>
