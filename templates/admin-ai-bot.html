@@ -49,7 +49,8 @@
                                     </div>
                                     <div id="ai_response" class="d-none" style="width: 100%;">
                                         <h3>Smart Retail AI:</h3>
-                                        <div id="ai_message"></div>
+                                        <div id="ai_message" class="p-2" style="max-height: 300px; overflow-y: auto; width: 500px" aria-live="polite" aria-atomic="true">
+                                        </div>                                        
                                     </div>
                                 </div>
                                 <div style="position: absolute; bottom: -10; width: 500px">
@@ -58,6 +59,7 @@
                                             <input id="message" type="text" class="rounded-start-3 form-control rounded-0" placeholder="Enter your message here...">
                                             <button onclick="message_ai($('#message').val())" class="btn btn-dark rounded-end-3 rounded-0">Send</button>
                                         </div>
+                                        <button onclick="clear_message()" class="btn border-dark rounded-4 ms-2">Clear</button>
                                     </div>
                                 </div>
                             </div>
