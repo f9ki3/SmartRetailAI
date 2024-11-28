@@ -247,16 +247,62 @@ function getResponse(input) {
         // Return the placeholder for immediate display
         return chatYearlyHTML;
     } else if (lowerInput.includes('most bought product')) {
-        return `
-            <div>
-                <p>The most bought product is:</p>
-                <ul>
-                    <li>Product: MegaWidget</li>
-                    <li>Units Sold: 5,000</li>
-                    <li>Revenue: 125,000</li>
-                </ul>
-            </div>`;
-    } else if (lowerInput.includes('least bought product')) {
+        $.ajax({
+            url: '/get_dashboard_count',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const todaySales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_today);
+                const monthSales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_month);
+        
+                $('#today_sales').text(todaySales);
+                $('#month_sales').text(monthSales);
+                $('#admin_count').text(response.count_admin);
+                $('#cashier_count').text(response.count_cashier);
+        
+                const topProducts = response.top_products;
+                const seriesData = topProducts.map(product => product[1]);
+                const labelsData = topProducts.map(product => product[0]);
+        
+                // Donut chart for top products
+                var optionsDonut = {
+                    series: seriesData,
+                    chart: { type: 'donut' },
+                    labels: labelsData,
+                    colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'], // Brighter colors
+                    legend: { show: false },
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: { width: 200 },
+                            legend: { show: false }
+                        }
+                    }]
+                };
+                var donutChart = new ApexCharts(document.querySelector("#topProducts"), optionsDonut);
+                donutChart.render();
+        
+                // Render Top Products HTML
+                let topProductsHTML = '<ul>';
+                topProducts.forEach(product => {
+                    topProductsHTML += `<li>${product[0]}: ${product[1]}</li>`;
+                });
+                topProductsHTML += '</ul>';
+        
+                // Display the top products and analysis
+                const analysisText = `
+                    <p><strong>Analysis:</strong> These are the most popular products in terms of units sold. The success of these items could be attributed to factors such as competitive pricing, high customer demand, and effective promotions. To further boost sales, we could consider offering bundle deals or increase marketing efforts for these products to reach even more customers.</p>
+                `;
+        
+                // Insert the top products and analysis into the HTML element
+                $('#most_bought').html(topProductsHTML + analysisText);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching top products:', error);
+                $('#most_bought').html('<div>Error fetching top products data.</div>');
+            }
+        });
+    }else if (lowerInput.includes('least bought product')) {
         return `
             <div>
                 <p>The least bought product is:</p>
@@ -285,7 +331,7 @@ function getResponse(input) {
     } else {
         return `
             <div>
-                <p>I'm sorry, I don't have information about "<strong>{input}</strong>".</p>
+                <p>I'm sorry, I don't have information about it.</p>
             </div>`;
     }
 }
