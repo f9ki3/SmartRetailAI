@@ -445,36 +445,37 @@ function getResponse(input) {
         
         // Return the placeholder for immediate display
         return chatLeastHTML;
-    } else if (lowerInput.includes('create an attractive display')) {
+    } else if (lowerInput.includes('create an attractive display') || lowerInput.includes('design an appealing display') || lowerInput.includes('set up an eye-catching arrangement')) {
         return 'Creating an attractive display involves highlighting your best products, organizing items by color or theme, and keeping the layout clean and inviting. Make sure the products are well-lit and accessible to customers.';
     } 
-    else if (lowerInput.includes('upsell')) {
+    else if (lowerInput.includes('upsell') || lowerInput.includes('suggest higher-end options') || lowerInput.includes('promote upgrades')) {
         return 'Upselling can be done by suggesting complementary items to your customers, like matching accessories or a different style in the same category. Offer discounts or special deals for bundling items together.';
     } 
-    else if (lowerInput.includes('build customer loyalty')) {
+    else if (lowerInput.includes('build customer loyalty') || lowerInput.includes('develop customer trust') || lowerInput.includes('increase customer retention')) {
         return 'Building customer loyalty can be achieved by offering great service, rewards programs, and personalized experiences. Encourage repeat visits by sending thank-you notes, birthday discounts, or exclusive promotions for loyal customers.';
     } 
-    else if (lowerInput.includes('seasonal promotions')) {
+    else if (lowerInput.includes('seasonal promotions') || lowerInput.includes('holiday deals') || lowerInput.includes('time-limited offers')) {
         return 'Seasonal promotions are great for driving traffic and sales. Offer discounts or limited-time offers during key times like holidays or back-to-school season. Tailor your products and marketing efforts to match the season or event.';
     } 
-    else if (lowerInput.includes('stand out from competitors')) {
+    else if (lowerInput.includes('stand out from competitors') || lowerInput.includes('differentiate from rivals') || lowerInput.includes('outshine your competitors')) {
         return 'To stand out from competitors, focus on what makes your store unique. This could be exclusive products, superior customer service, or a memorable shopping experience. Keep your store clean, and engage with your customers through social media and personalized offers.';
     } 
-    else if (lowerInput.includes('train my staff')) {
+    else if (lowerInput.includes('train my staff') || lowerInput.includes('educate my team') || lowerInput.includes('improve staff skills')) {
         return 'Training your staff in excellent customer service is crucial. Make sure they understand the products, are friendly, approachable, and know how to engage with customers. Offer role-playing sessions and regular feedback to improve their performance.';
     } 
-    else if (lowerInput.includes('handle complaints')) {
+    else if (lowerInput.includes('handle complaints') || lowerInput.includes('manage customer grievances') || lowerInput.includes('address customer issues')) {
         return 'Handling complaints gracefully is key to customer satisfaction. Listen carefully, empathize with the customer’s concern, and offer solutions such as exchanges, refunds, or store credit. Always stay calm and respectful, and aim to resolve issues quickly.';
     } 
-    else if (lowerInput.includes('use social media')) {
+    else if (lowerInput.includes('use social media') || lowerInput.includes('leverage social platforms') || lowerInput.includes('promote on social media')) {
         return 'Using social media effectively can boost your store’s presence. Post regularly with engaging content, showcase new arrivals, behind-the-scenes looks, and promotions. Interact with followers, respond to messages, and use paid ads to reach a wider audience.';
     } 
-    else if (lowerInput.includes('cross-sell')) {
+    else if (lowerInput.includes('cross-sell') || lowerInput.includes('recommend complementary products') || lowerInput.includes('suggest related items')) {
         return 'Cross-selling is the art of suggesting products that complement what the customer is already purchasing. For example, if a customer is buying a dress, suggest a matching handbag or jewelry. Always keep the suggestion relevant to their needs and preferences.';
     } 
-    else if (lowerInput.includes('assess customer preferences')) {
+    else if (lowerInput.includes('assess customer preferences') || lowerInput.includes('evaluate customer interests') || lowerInput.includes('understand customer needs')) {
         return 'To assess customer preferences, pay attention to what products they spend the most time looking at, ask for feedback directly, and use sales data to identify trends. This will help you stock the right items that cater to your customers’ needs.';
     }else {
         return "<p>Sorry, I don't understand the request. Please try again.</p>";
     }
+    
 }
