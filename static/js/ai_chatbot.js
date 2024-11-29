@@ -39,7 +39,6 @@ function message_ai(input) {
     }, 3000);
 }
 
-
 // Function to determine the response based on the input
 function getResponse(input) {
     const lowerInput = input.toLowerCase();
@@ -52,21 +51,72 @@ function getResponse(input) {
                     <li>Total Sales: 10,000</li>
                     <li>Top Region: North America</li>
                     <li>Growth Rate: 12%</li>
-                    <li>Growth Rate: 12%</li>
                 </ul>
             </div>`;
     } else if (lowerInput.includes('inventory report')) {
-        return `
-            <div>
-                <p>Here is the latest Inventory Report:</p>
-                <ul>
-                    <li>Stock Items: 500</li>
-                    <li>Out of Stock: 20</li>
-                    <li>Pending Orders: 15</li>
+        // Return the initial HTML structure immediately
+        const chatInventoryHTML = `
+            <div class="inventory-report">
+                <ul id="criticalStocksList" style="font-size: 12px">
+                    <!-- List of critical stocks will be populated here -->
                 </ul>
-            </div>`;
+                <div id="criticalStocksChart" style="height: 300px;">
+                    <!-- The donut chart for critical stocks will be rendered here -->
+                </div>
+            </div>
+        `;
+        
+        // Perform AJAX request to fetch the critical stocks data
+        $.ajax({
+            url: '/get_dashboard_count',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const critical_stocks = response.critical_stocks;
+
+                // Prepare the data for the donut chart
+                const seriesData2 = critical_stocks.map(stock => stock[1]);
+                const labels = critical_stocks.map(stock => stock[0]);
+
+                // Donut chart options for critical stocks
+                var optionsCriticalStocks = {
+                    series: seriesData2,
+                    chart: { type: 'donut', 
+                            height: '250px' },
+                    labels: labels,
+                    colors: ['#FF0000', '#FF4500', '#FF6347', '#FF7F50', '#CD5C5C'], // Red hues for critical stocks
+                    legend: { show: false },
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: { width: 200 },
+                            legend: { position: 'bottom' }
+                        }
+                    }]
+                };
+
+                // Render the donut chart in the criticalStocks div
+                var donutChartCriticalStocks = new ApexCharts(document.querySelector("#criticalStocksChart"), optionsCriticalStocks);
+                donutChartCriticalStocks.render();
+
+                // Create a list of critical stocks to show in text format
+                let criticalStocksHTML = '';
+                critical_stocks.forEach(stock => {
+                    criticalStocksHTML += `<li>${stock[0]}: ${stock[1]} units left</li>`;
+                });
+
+                // Append the list of critical stocks to the #criticalStocksList element
+                $('#criticalStocksList').html(criticalStocksHTML);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching dashboard count:', error);
+                $('#criticalStocksList').html('<li>Error fetching critical stocks data.</li>');
+            }
+        });
+
+        return chatInventoryHTML;
     } else if (lowerInput.includes('daily sales')) {
-        // Add placeholder for daily sales and charts
+        // Return the placeholder for immediate display
         const chatDailyHTML = `
             <div id="chat_daily">Fetching daily sales...</div>
             <div id="dailySales"></div> <!-- Placeholder for daily sales chart -->
@@ -108,49 +158,38 @@ function getResponse(input) {
                 $('#chat_daily').text('Error fetching sales data.');
             }
         });
-    
-        // Return the placeholder for immediate display
+
         return chatDailyHTML;
-    } else if (
-        lowerInput.includes('what is the sales this month') || 
-        lowerInput.includes('this month sales') ||
-        lowerInput.includes('monthly sales') ||
-        lowerInput.includes('monthly')
-    ) {
-        // Add the placeholder for monthly sales response and chart
+    } else if (lowerInput.includes('what is the sales this month') || lowerInput.includes('this month sales') ||
+        lowerInput.includes('monthly sales') || lowerInput.includes('monthly')) {
+
         const chatMonthlyHTML = `
             <div id="chat_monthly">
                 Fetching monthly sales...
                 <div id="monthlySalesChartContainer" style="margin-top: 20px;"></div>
             </div>
         `;
-        
-        // Perform the AJAX request
+
         $.ajax({
             url: '/get_dashboard_count',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                // Extract and format monthly sales
                 const monthSales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_month);
-    
-                // Get the current date
+
                 const now = new Date();
                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
                 const formattedDate = now.toLocaleDateString('en-US', options);
-    
-                // Update the HTML element with the formatted sales and current date in a bold sentence
+
                 $('#chat_monthly').html(`
                     The monthly sales for this month as of ${formattedDate} is <b>${monthSales}</b>.
                     <div id="monthlySalesChartContainer" style="margin-top: 20px;"></div>
                 `);
-    
-                // Extract monthly sales data for the chart
+
                 const monthlySales = response.monthly_sales;
                 const monthly_month = monthlySales.map(sale => sale[0]);
                 const monthly_data = monthlySales.map(sale => sale[1]);
-    
-                // Set up the bar chart
+
                 var optionsMonthlySales = {
                     series: [{ name: 'Monthly Sales', data: monthly_data }],
                     chart: { height: 300, type: 'bar' },
@@ -166,8 +205,7 @@ function getResponse(input) {
                     },
                     tooltip: { x: { format: 'MMM yyyy' } }
                 };
-    
-                // Render the chart in the newly added container
+
                 var monthlySalesChart = new ApexCharts(document.querySelector("#monthlySalesChartContainer"), optionsMonthlySales);
                 monthlySalesChart.render();
             },
@@ -176,55 +214,43 @@ function getResponse(input) {
                 $('#chat_monthly').html('<span style="color: red;">Error fetching sales data.</span>');
             }
         });
-    
-        // Return the placeholder immediately
+
         return chatMonthlyHTML;
     } else if (lowerInput.includes('yearly')) {
-        // Add placeholder for yearly sales and charts
         const chatYearlyHTML = `
             <div id="chat_yearly">Fetching yearly sales for 2023 and 2024...</div>
             <div id="yearlySales"></div> <!-- Placeholder for yearly sales chart -->
         `;
-        
-        // Perform the AJAX request to get data
+
         $.ajax({
             url: '/get_dashboard_count',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                // Format sales for 2023 and 2024
                 const sales2023 = response.yearly_sales.find(sale => sale[0] === '2023') ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.yearly_sales.find(sale => sale[0] === '2023')[1]) : 'N/A';
                 const sales2024 = response.yearly_sales.find(sale => sale[0] === '2024') ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.yearly_sales.find(sale => sale[0] === '2024')[1]) : 'N/A';
-                
-                // Display the total sales for 2023 and 2024
+
                 $('#chat_yearly').html(`
                     The total sales for the year 2023 are <b>${sales2023}</b> and for 2024 are <b>${sales2024}</b>.
                 `);
-                
-                // Yearly sales data for chart (filtering for 2023 and 2024)
+
                 const year_data = ['2023', '2024'];
                 const year_amounts = [
                     response.yearly_sales.find(sale => sale[0] === '2023') ? response.yearly_sales.find(sale => sale[0] === '2023')[1] : 0,
                     response.yearly_sales.find(sale => sale[0] === '2024') ? response.yearly_sales.find(sale => sale[0] === '2024')[1] : 0
                 ];
-    
+
                 var optionsYearlySales = {
-                    series: [{ name: 'Yearly Sales', data: year_amounts }],
-                    chart: { height: 300, type: 'bar' },
-                    colors: ['#FF5733', '#FFBD33'], // Different colors for 2023 and 2024
-                    dataLabels: { enabled: false },
-                    xaxis: {
-                        categories: year_data,
-                        labels: { show: true } // Show x-axis labels for 2023 and 2024
-                    },
-                    plotOptions: {
-                        bar: {
-                            distributed: true // Ensures each bar uses a different color from the colors array
-                        }
-                    },
-                    tooltip: { x: { format: 'yyyy' } }
+                    series: [{
+                        name: 'Yearly Sales',
+                        data: year_amounts
+                    }],
+                    chart: { type: 'bar', height: 350 },
+                    colors: ['#4CAF50'], // Green for yearly sales
+                    xaxis: { categories: year_data },
+                    dataLabels: { enabled: false }
                 };
-                
+
                 var yearlySalesChart = new ApexCharts(document.querySelector("#yearlySales"), optionsYearlySales);
                 yearlySalesChart.render();
             },
@@ -233,10 +259,9 @@ function getResponse(input) {
                 $('#chat_yearly').text('Error fetching sales data.');
             }
         });
-    
-        // Return the placeholder for immediate display
+
         return chatYearlyHTML;
-    } else if (lowerInput.includes('most bought product')) {
+    } else if (lowerInput.includes('most bought product') || lowerInput.includes('top product') || lowerInput.includes('top products')){
         // Add a placeholder for the Most Bought Product chart
         const chatTopHTML = `
             <div id="chat_top">Fetching Most Bought Product...</div>
@@ -308,7 +333,7 @@ function getResponse(input) {
         
         // Return the placeholder for immediate display
         return chatTopHTML;
-    }else if (lowerInput.includes('least bought product')) {
+    }else if (lowerInput.includes('least bought product') || lowerInput.includes('low product') || lowerInput.includes('low products')) {
         // Add a placeholder for the Least Bought Product chart
         const chatLeastHTML = `
             <div id="chat_least">Fetching Least Bought Product...</div>
@@ -380,25 +405,7 @@ function getResponse(input) {
         
         // Return the placeholder for immediate display
         return chatLeastHTML;
-    } else if (lowerInput.includes('hello')) {
-        return `
-            <div>
-                <p>Thanks for messaging me. What do you want me to do for you?</p>
-                <p class="p-0 mt-5 text-muted" style="font-size: 12px;">Try this prompt:</p>
-                <div>
-                    <button onclick="message_ai('Sales Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Sales Report</button>
-                    <button onclick="message_ai('Inventory Report')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Inventory Report</button>
-                    <button onclick="message_ai('Daily Sales')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Daily Sales</button>
-                    <button onclick="message_ai('Monthly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Monthly</button>
-                    <button onclick="message_ai('Yearly')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Yearly</button>
-                    <button onclick="message_ai('Most Bought Product')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Most Bought Product</button>
-                    <button onclick="message_ai('Least Bought Product')" class="btn btn-sm border text-muted rounded-3 mt-1" style="font-size: 12px;">Least Bought Product</button>
-                </div>
-            </div>`;
     } else {
-        return `
-            <div>
-                <p>I'm sorry, I don't have information about it.</p>
-            </div>`;
+        return "<p>Sorry, I don't understand the request. Please try again.</p>";
     }
 }
