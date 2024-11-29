@@ -44,19 +44,59 @@ function getResponse(input) {
     const lowerInput = input.toLowerCase();
 
     if (lowerInput.includes('sales report')) {
-        return `
-            <div>
-                <p>Here is the detailed Sales Report:</p>
-                <ul>
-                    <li>Total Sales: 10,000</li>
-                    <li>Top Region: North America</li>
-                    <li>Growth Rate: 12%</li>
-                </ul>
-            </div>`;
+        const chatSalesReportHTML = `
+            <div class="sales-report">
+                <div>
+                    <hr>
+                    <h6 class="text-muted">Today's Sales</h6>
+                    <p id="today_sales_explanation">Loading...</p> <!-- Placeholder for today's sales explanation -->
+                    <div id="today_sales"><strong>Loading...</strong></div> <!-- Placeholder for today's sales value with bold -->
+                </div>
+                <div>
+                    <hr>
+                    <h6 class="text-muted">Monthly Sales</h6>
+                    <p id="month_sales_explanation">Loading...</p> <!-- Placeholder for monthly sales explanation -->
+                    <div id="month_sales"><strong>Loading...</strong></div> <!-- Placeholder for monthly sales value with bold -->
+                </div>
+            </div>
+        `;
+        
+        // Insert the HTML into the appropriate place in the DOM
+        $('#report-container').html(chatSalesReportHTML); // Replace #report-container with the actual container ID you are targeting
+        
+        // Make AJAX call to get sales data
+        $.ajax({
+            url: '/get_dashboard_count',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const todaySales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_today);
+                const monthSales = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(response.total_sales_month);
+        
+                // Update the sales data on the page with bold formatting
+                $('#today_sales').html(`<strong>${todaySales}</strong>`);
+                $('#month_sales').html(`<strong>${monthSales}</strong>`);
+    
+                // Update the explanation paragraphs
+                $('#today_sales_explanation').text("Today's sales represent the total sales for today. This gives you a snapshot of daily performance.");
+                $('#month_sales_explanation').text("This month's sales reflect the accumulated sales for the current month. It provides a broader view of the sales performance throughout the month.");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching sales data:', error);
+                $('#today_sales').html('<strong>Error loading data</strong>');
+                $('#month_sales').html('<strong>Error loading data</strong>');
+                $('#today_sales_explanation').text('Error loading data explanation');
+                $('#month_sales_explanation').text('Error loading data explanation');
+            }
+        });
+    
+        // Return the initial HTML structure with placeholders (this will be dynamically updated by the above code)
+        return chatSalesReportHTML;
     } else if (lowerInput.includes('inventory report')) {
         // Return the initial HTML structure immediately
         const chatInventoryHTML = `
             <div class="inventory-report">
+                <p>This are the available stocks inventory</p>
                 <ul id="criticalStocksList" style="font-size: 12px">
                     <!-- List of critical stocks will be populated here -->
                 </ul>
